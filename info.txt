@@ -186,6 +186,9 @@ OBS: I also found a bug that detects a lightpanel button press before the panel 
 [X] ADD: other panels also work with the new 3d sounds
 [X] ADD: more radios
 
+[3.5.0]
+[X] ADD: fucking 3d lights
+
 Sugest�es:
 
 

@@ -17,7 +17,7 @@ extern void* (*GetVehicleFromRef)(int);
 
 static std::list<std::pair<unsigned int *, unsigned int>> resetEntries;
 
-int Vehicle::m_LightIdOffset = 0;
+int Vehicle::m_LightIdOffset = 1000;
 
 Vehicle::Vehicle(int hVehicle, int modelId)
 {

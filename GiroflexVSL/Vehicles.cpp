@@ -139,7 +139,7 @@ void Vehicles::Update(int dt)
 
 void Vehicles::RenderBefore(CVehicle* pVehicle)
 {
-    Log::Level(LOG_LEVEL::LOG_BOTH) << "Vehicles: RenderBefore " << pVehicle << std::endl;
+    //Log::Level(LOG_LEVEL::LOG_BOTH) << "Vehicles: RenderBefore " << pVehicle << std::endl;
 
     for(auto pair : m_Vehicles)
     {
@@ -152,7 +152,7 @@ void Vehicles::RenderBefore(CVehicle* pVehicle)
 
 void Vehicles::RenderAfter(CVehicle* pVehicle)
 {
-    Log::Level(LOG_LEVEL::LOG_BOTH) << "Vehicles: RenderAfter " << pVehicle << std::endl;
+    //Log::Level(LOG_LEVEL::LOG_BOTH) << "Vehicles: RenderAfter " << pVehicle << std::endl;
 
     for(auto pair : m_Vehicles)
     {

@@ -3,7 +3,7 @@ DGFX2 ~1~, ~1~
 DGFX3 ~1~, ~1~, ~1~
 DGFX4 <
 DGFX5 >
-DGFX6 Giroflex VSL v3.4.0 (by ~y~Danilo1301~w~)
+DGFX6 Giroflex VSL v3.5.0 (by ~y~Danilo1301~w~)
 DGFX7 Close
 DGFX8 Back
 DGFX9 Edit position
@@ -97,3 +97,7 @@ DGFX96 Radio
 DGFX97 Invert rotation
 DGFX98 Volume siren
 DGFX99 Volume radio
+DGFX100 LEDs
+DGFX101 Enable LEDs lightbar
+DGFX102 Enable LEDs normal
+DGFX103 LED normal - ID

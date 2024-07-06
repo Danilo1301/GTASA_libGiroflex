@@ -16,7 +16,7 @@
 // ---------------------------------------
 
 //MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, Mod::m_Version, Danilo1301) //whoops
-MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.4.0, Danilo1301)
+MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.5.0, Danilo1301)
 
 // ---------------------------------------
 
@@ -85,8 +85,6 @@ DECL_HOOK(void*, UpdateGameLogic, uintptr_t a1)
 
 DECL_HOOKv(RenderVehicle, void* self)
 {
-    Log::Level(LOG_LEVEL::LOG_BOTH) << "RenderVehicle " << self << std::endl;
-
     CVehicle* vehicle = (CVehicle*)self;
 
     Vehicles::RenderBefore(vehicle);
