@@ -137,6 +137,32 @@ void Vehicles::Update(int dt)
     //Log::Level(LOG_LEVEL::LOG_BOTH) << "Vehicles: Update end" << std::endl;
 }
 
+void Vehicles::RenderBefore(CVehicle* pVehicle)
+{
+    Log::Level(LOG_LEVEL::LOG_BOTH) << "Vehicles: RenderBefore " << pVehicle << std::endl;
+
+    for(auto pair : m_Vehicles)
+    {
+        auto vehicle = pair.second;
+        if(vehicle->pVehicle != pVehicle) continue;
+
+        vehicle->RenderBefore();
+    }
+}
+
+void Vehicles::RenderAfter(CVehicle* pVehicle)
+{
+    Log::Level(LOG_LEVEL::LOG_BOTH) << "Vehicles: RenderAfter " << pVehicle << std::endl;
+
+    for(auto pair : m_Vehicles)
+    {
+        auto vehicle = pair.second;
+        if(vehicle->pVehicle != pVehicle) continue;
+
+        vehicle->RenderAfter();
+    }
+}
+
 void Vehicles::AddCoronaToRender(RenderCorona corona)
 {
     if (corona.color.a == 0) return;

@@ -51,6 +51,10 @@ int (*GetVehicleRef)(int);
 void* (*GetVehicleFromRef)(int);
 void (*RegisterCorona)(unsigned int id, void* attachTo, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha, CVector const& posn, float radius, float farClip, int coronaType, int flaretype, bool enableReflection, bool checkObstacles, int _param_not_used, float angle, bool longDistance, float nearClip, unsigned char fadeState, float fadeSpeed, bool onlyFromBelow, bool reflectionDelay);
 
+RpClump* (*RpClumpForAllAtomics)(RpClump* clump, RpAtomicCallBack callback, void* pData);
+RpGeometry* (*RpGeometryForAllMaterials)(RpGeometry* geometry, RpMaterialCallBack fpCallBack, void* pData);
+char* (*GetFrameNodeName)(RwFrame* frame);
+
 CCamera* camera;
 bool* userPaused;
 bool* codePaused;
@@ -77,6 +81,17 @@ DECL_HOOK(void*, UpdateGameLogic, uintptr_t a1)
     }
 
     return UpdateGameLogic(a1);
+}
+
+DECL_HOOKv(RenderVehicle, void* self)
+{
+    Log::Level(LOG_LEVEL::LOG_BOTH) << "RenderVehicle " << self << std::endl;
+
+    CVehicle* vehicle = (CVehicle*)self;
+
+    Vehicles::RenderBefore(vehicle);
+    RenderVehicle(self);
+    Vehicles::RenderAfter(vehicle);
 }
 
 //
@@ -278,9 +293,11 @@ extern "C" void OnModLoad()
     //
     
     //void* hGTASA = aml->GetLibHandle("libGTASA.so"); crashes the game
+    //void* pGameHandle = aml->GetLibHandle("libGTASA.so");
+
     void* hGTASA = dlopen("libGTASA.so", RTLD_LAZY);
     uintptr_t gameAddr = (uintptr_t)(cleo->GetMainLibraryLoadAddress());
-   
+
     Log::Level(LOG_LEVEL::LOG_BOTH) << "hGTASA: " << hGTASA << std::endl;
 
     Log::Level(LOG_LEVEL::LOG_BOTH) << "Getting Syms 1..." << std::endl;
@@ -308,7 +325,15 @@ extern "C" void OnModLoad()
     SET_TO(GetVehicleFromRef, aml->GetSym(hGTASA, "_ZN6CPools10GetVehicleEi"));
     SET_TO(RegisterCorona, aml->GetSym(hGTASA, "_ZN8CCoronas14RegisterCoronaEjP7CEntityhhhhRK7CVectorffhhhhhfbfbfbb"));
     
+    SET_TO(RpClumpForAllAtomics, aml->GetSym(hGTASA, "_Z20RpClumpForAllAtomicsP7RpClumpPFP8RpAtomicS2_PvES3_"));
+    SET_TO(RpGeometryForAllMaterials, aml->GetSym(hGTASA, "_Z25RpGeometryForAllMaterialsP10RpGeometryPFP10RpMaterialS2_PvES3_"));
+    SET_TO(GetFrameNodeName, aml->GetSym(hGTASA, "_Z16GetFrameNodeNameP7RwFrame"));
+
+
     HOOKPLT(UpdateGameLogic, gameAddr + 0x66FE58);
+
+    HOOK(RenderVehicle, aml->GetSym(hGTASA, "_ZN8CVehicle6RenderEv"));
+
     //
     
     Log::Level(LOG_LEVEL::LOG_BOTH) << "vecCachedPos: x " << m_vecCachedPos->x << ", y " << m_vecCachedPos->y << std::endl;

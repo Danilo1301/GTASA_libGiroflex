@@ -2,6 +2,9 @@
 
 #include "stdint.h"
 
+#include "rw/rwplcore.h"
+#include "rw/rpworld.h"
+
 #define RwV2d CVector2D
 #define RwV3d CVector
 
@@ -75,6 +78,7 @@ public:
     char         matrixpad[3];
 };
 
+
 // Simple entities
 class CSimpleTransform
 {
@@ -84,7 +88,22 @@ public:
 };
 class CPlaceable
 {
+protected:
+    CPlaceable();
 public:
+    char padding[4];
+    CSimpleTransform m_placement;
+    CMatrix *m_matrix;
+
+    CSimpleTransform* GetPlacement()
+    {
+        return (CSimpleTransform*)((uintptr_t)this + 4);
+    }
+    CMatrix* GetMatrix()
+    {
+        return *(CMatrix**)((uintptr_t)this + 20);
+    }
+
     CVector* GetPosSA()
     {
         auto mat = *(CMatrix**)((uintptr_t)this + 20);
@@ -112,9 +131,20 @@ public:
     }
 };
 
+class CEntity : public CPlaceable {
+protected:
+    CEntity();  
+public:
+    union {
+        struct RwObject *m_pRwObject;
+        struct RpClump *m_pRwClump;
+        struct RpAtomic *m_pRwAtomic;
+    };
+};
+
 class CCamera : public CPlaceable {};
 class CPed : public CPlaceable {};
-class CVehicle : public CPlaceable {};
+class CVehicle : public CEntity {};
 class CObject : public CPlaceable {};
 
 class CRGBA {
@@ -218,3 +248,7 @@ struct GTAVehicleSA : GTAEntity
 {
     char structure[2604];
 };
+
+static RwFrame* GetObjectParent(RwObject *obj) {
+    return reinterpret_cast<RwFrame *>(rwObjectGetParent(obj));
+}

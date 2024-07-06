@@ -63,6 +63,10 @@ public:
 
 	float rotateAngle = 0.0f;
 
+	bool useLightbarLEDs = false;
+	bool useNormalLEDs = false;
+	int normalLEDStartIndex = 1;
+
     LightGroup() {}
 
     ~LightGroup()
@@ -172,6 +176,10 @@ public:
 		value["rotateSpeed"] = rotateSpeed;
 		value["rotateInverse"] = rotateInverse;
 
+		value["useLightbarLEDs"] = useLightbarLEDs;
+		value["useNormalLEDs"] = useNormalLEDs;
+		value["normalLEDStartIndex"] = normalLEDStartIndex;
+
 		return value;
 	}
 
@@ -236,5 +244,9 @@ public:
 		rotateDistance = ValidateValue(value["rotateDistance"], rotateDistance).asFloat();
 		rotateSpeed = ValidateValue(value["rotateSpeed"], rotateSpeed).asFloat();
 		rotateInverse = ValidateValue(value["rotateInverse"], rotateInverse).asBool();
+
+		useLightbarLEDs = ValidateValue(value["useLightbarLEDs"], useLightbarLEDs).asBool();
+		useNormalLEDs = ValidateValue(value["useNormalLEDs"], useNormalLEDs).asBool();
+		normalLEDStartIndex = ValidateValue(value["normalLEDStartIndex"], normalLEDStartIndex).asInt();
 	}
 };

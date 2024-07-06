@@ -7,6 +7,7 @@
 #include "WindowPointLight.h"
 #include "WindowFlare.h"
 #include "WindowRotate.h"
+#include "WindowLed.h"
 
 #include "ModelInfos.h"
 #include "LightGroupDatas.h"
@@ -185,6 +186,13 @@ void WindowLightGroups::CreateEditLightGroup(Window* parent, LightGroup* lightGr
     button_white_corona->onClick = [lightGroup, window]() {
         WindowWhiteCorona::Create(window, lightGroup);
     };
+
+    auto button_leds = window->AddButton(100);
+    button_leds->onClick = [lightGroup, window]() {
+        WindowLed::Create(window, lightGroup);
+    };
+
+    //auto lightIdOffset = window->AddIntRange(23, &Vehicle::m_LightIdOffset, -100000, 100000, 1);
 
     auto patternOffset = window->AddIntRange(76, &lightGroup->patternOffset, 0, 10, 1);
     patternOffset->holdToChange = false;

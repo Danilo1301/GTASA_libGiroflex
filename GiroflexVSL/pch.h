@@ -6,6 +6,7 @@
 #include <vector>
 #include <filesystem>
 #include <map>
+#include <list>
 //#include <windows.h>
 #include <sys/stat.h>
 
@@ -112,4 +113,14 @@ static int GetRandomNumber(int min, int max)
         x = rand();
     }while (x >= RAND_MAX - remainder);
     return min + x % n;
+}
+
+static std::string CVectorToString(CVector vec)
+{
+    return "(" + std::to_string(vec.x) + ", " + std::to_string(vec.y) + ", " + std::to_string(vec.z) + ")";
+}
+
+static std::string CVector2DToString(CVector2D vec)
+{
+    return "(" + std::to_string(vec.x) + ", " + std::to_string(vec.y) + ")";
 }

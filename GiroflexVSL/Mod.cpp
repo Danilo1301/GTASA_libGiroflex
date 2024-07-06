@@ -22,11 +22,16 @@
 #include <mod/config.h>
 
 extern CVector2D *m_vecCachedPos;
+extern RpClump* (*RpClumpForAllAtomics)(RpClump* clump, RpAtomicCallBack callback, void* pData);
+extern RpGeometry* (*RpGeometryForAllMaterials)(RpGeometry* geometry, RpMaterialCallBack fpCallBack, void* pData);
+extern char* (*GetFrameNodeName)(RwFrame* frame);
 
 const char* Mod::m_Version = "3.4.0";
 
 bool canTurnSirenOn = true;
 bool canTurnPanelOn = true;
+
+Vehicle* testedVehicle = NULL;
 
 void Mod::Update(int dt)
 {
@@ -45,6 +50,62 @@ void Mod::Update(int dt)
 
     Vehicles::Update(dt);
     
+    if(auto vehicle = Globals::GetPlayerVehicle())
+    {
+        if(testedVehicle != vehicle)
+        {
+            testedVehicle = vehicle;
+
+            Log::Level(LOG_LEVEL::LOG_UPDATE) << "Player vehicle: " << vehicle->pVehicle << std::endl;
+            
+            auto pVehicle = vehicle->pVehicle;
+
+            Log::Level(LOG_LEVEL::LOG_BOTH) << "placement: " << CVectorToString(pVehicle->GetPlacement()->pos) << std::endl;
+            Log::Level(LOG_LEVEL::LOG_BOTH) << "matrix: " << CVectorToString(pVehicle->GetMatrix()->at) << std::endl;
+
+            Log::Level(LOG_LEVEL::LOG_BOTH) << "pos: " << CVectorToString(pVehicle->m_placement.pos) << std::endl;
+            Log::Level(LOG_LEVEL::LOG_BOTH) << "at: " << CVectorToString(pVehicle->m_matrix->at) << std::endl;
+
+            Log::Level(LOG_LEVEL::LOG_BOTH) << "m_pRwClump: " << pVehicle->m_pRwClump << std::endl;
+
+            auto clump = pVehicle->m_pRwClump;
+
+            RpClumpForAllAtomics(clump, [](RpAtomic* atomic, void* data) {
+                Log::Level(LOG_LEVEL::LOG_BOTH) << "atomic: " << atomic << std::endl;
+
+                RwFrame* frameAtomic = GetObjectParent((RwObject*)atomic);
+		        std::string name = GetFrameNodeName(frameAtomic);
+
+                Log::Level(LOG_LEVEL::LOG_BOTH) << "name: " << name << std::endl;
+
+                if(name.find("lightbar-led-") == std::string::npos) return atomic;
+
+                if (!atomic->geometry) return atomic;
+
+                //atomic->geometry->flags |= rpGEOMETRYMODULATEMATERIALCOLOR;
+
+                auto geometry = atomic->geometry;
+
+                RpGeometryForAllMaterials(geometry, [](RpMaterial* material, void* data) {
+                    
+                    Log::Level(LOG_LEVEL::LOG_BOTH) << "material: " << material << std::endl;
+
+                    /*
+                    material->color = { 255, 255, 255, 255 };
+
+                    material->surfaceProps.ambient = 10;
+					material->surfaceProps.diffuse = 10;
+					material->surfaceProps.specular = 10;
+                    */
+
+                    return material;
+                }, 0);
+
+                return atomic;
+            }, (void*)((uint32_t)(0)));
+        }
+    }
+
     //Log::Level(LOG_LEVEL::LOG_UPDATE) << "SoundPanelSystem" << std::endl;
 
     //SoundPanelSystem::Update(dt);

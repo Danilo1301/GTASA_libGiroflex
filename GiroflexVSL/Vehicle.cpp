@@ -9,10 +9,15 @@
 #include "Patterns.h"
 #include "Globals.h"
 #include "ModConfig.h"
+#include "VehicleDummy.h"
 
 #include "windows/WindowEditing.h"
 
 extern void* (*GetVehicleFromRef)(int);
+
+static std::list<std::pair<unsigned int *, unsigned int>> resetEntries;
+
+int Vehicle::m_LightIdOffset = 0;
 
 Vehicle::Vehicle(int hVehicle, int modelId)
 {
@@ -64,6 +69,9 @@ void Vehicle::Update(int dt)
     std::string vehicleIdString = "Vehicle " + std::to_string(hVehicle) + ": ";
 
     Log::Level(LOG_LEVEL::LOG_DEEP_UPDATE) << vehicleIdString << "Update" << std::endl;
+
+    ledsTime += dt;
+    if(ledsTime >= 2000) ledsTime = 0;
 
     this->sirenSystem->Update(dt);
 
@@ -117,7 +125,7 @@ void Vehicle::UpdateLightGroups(int dt)
 
     auto modelInfo = ModelInfos::GetModelInfo(modelId);
 
-    auto lightId = hVehicle + 69420;
+    auto lightId = hVehicle + Vehicle::m_LightIdOffset;
 
     for (auto lightGroup : modelInfo->lightGroups)
     {
@@ -360,6 +368,125 @@ void Vehicle::UpdateLightGroups(int dt)
             }
         }
     }
+}
+
+void Vehicle::RenderBefore()
+{
+    if (!ModelInfos::HasModelInfo(modelId)) return;
+
+    auto modelInfo = ModelInfos::GetModelInfo(modelId);
+
+    auto atomics = VehicleDummy::RpClumpGetAllAtomics(pVehicle->m_pRwClump);
+	for (auto atomic : atomics)
+	{
+		if (!atomic->geometry) continue;
+
+		atomic->geometry->flags |= rpGEOMETRYMODULATEMATERIALCOLOR;
+
+		auto frameAtomic = GetObjectParent((RwObject*)atomic);
+		auto name = VehicleDummy::GetFrameName(frameAtomic);
+		//CVector position = m_Vehicle->TransformFromObjectSpace(GetFrameNodePosition(frameAtomic));
+
+        //Log::Level(LOG_LEVEL::LOG_BOTH) << "name: " << name << std::endl;
+
+        for (auto lightGroup : modelInfo->lightGroups)
+        {
+            if(!lightGroup->useLightbarLEDs && !lightGroup->useNormalLEDs) continue;
+
+            LightGroupData* lightGroupData = LightGroupDatas::GetLightGroupData(lightGroup, hVehicle);
+
+            if (!lightGroupData)
+            {
+                continue;
+            }
+
+            for (int i = 0; i < (int)lightGroup->points.size(); i++)
+            {
+                auto point = lightGroup->points[i];
+
+                if(lightGroup->useLightbarLEDs)
+                {
+                    if (to_lower(name).compare(to_lower("lightbar-led-" + std::to_string(i + 1))) != 0) continue;
+                }
+
+                if(lightGroup->useNormalLEDs)
+                {
+                    int normalLedIndex = i + lightGroup->normalLEDStartIndex;
+
+                    if (to_lower(name).compare(to_lower("led-" + std::to_string(normalLedIndex))) != 0) continue;
+                }
+
+                //color
+                CRGBA color = CRGBA(255, 255, 255);
+               
+                //
+                int index = i;
+
+                bool enabled = lightGroupData->GetPointIsEnabled(point, index);
+                
+                if (lightGroup->freezeLights) enabled = true;
+
+                if (!lightGroupData->lightsOn && !lightGroup->alwaysEnabled) enabled = false;
+
+                if (WindowEditing::FreezeLights) enabled = true;
+
+                if (WindowEditing::ShowCurrentEditingLightGroup)
+                {
+                    if (WindowEditing::LightGroupToShow != lightGroup) enabled = false;
+                }
+
+                if (!enabled)
+				{
+					color = CRGBA(0, 0, 0, 255);
+				}
+
+                auto materials = VehicleDummy::RpGeometryGetAllMaterials(atomic->geometry);
+				for (auto material : materials)
+				{
+					//if (!material) continue;
+
+					material->color = { color.r, color.g, color.b, color.a };
+					
+					material->surfaceProps.ambient = 10;
+					material->surfaceProps.diffuse = 10;
+					material->surfaceProps.specular = 10;
+				}
+            }
+        }
+    }
+}
+
+/*
+if(name.find("lightbar-led-") == std::string::npos) continue;
+
+auto materials = VehicleDummy::RpGeometryGetAllMaterials(atomic->geometry);
+for (auto material : materials)
+{
+    //if (!material) continue;
+
+    resetEntries.push_back(std::make_pair(reinterpret_cast<unsigned int *>(&material->color), *reinterpret_cast<unsigned int *>(&material->color)));
+
+    if(ledsTime < 1000)
+    {
+        material->color = { 255, 255, 255, 255 };
+    } else {
+        material->color = { 0, 0, 0, 255 };
+    }
+    
+    resetEntries.push_back(std::make_pair(reinterpret_cast<unsigned int *>(&material->surfaceProps), *reinterpret_cast<unsigned int *>(&material->surfaceProps)));
+
+    material->surfaceProps.ambient = 10;
+    material->surfaceProps.diffuse = 10;
+    material->surfaceProps.specular = 10;
+}
+*/
+
+void Vehicle::RenderAfter()
+{
+    for (auto &p : resetEntries)
+    *p.first = p.second;
+
+    resetEntries.clear();
 }
 
 std::vector<LightGroupData*> Vehicle::GetLightGroupsData()

@@ -97,3 +97,7 @@ DGFX96 Radio
 DGFX97 Inverter rotacao
 DGFX98 Volume sirene
 DGFX99 Volume radio
+DGFX100 LEDs
+DGFX101 Ativar LEDs giroflex
+DGFX102 Ativar LEDs normais
+DGFX103 LED normal - ID

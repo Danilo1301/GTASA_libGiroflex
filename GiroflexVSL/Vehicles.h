@@ -26,6 +26,9 @@ public:
 
 	static void Update(int dt);
 
+	static void RenderBefore(CVehicle* pVehicle);
+	static void RenderAfter(CVehicle* pVehicle);
+
 	static void AddCoronaToRender(RenderCorona corona);
 
 	static void TryFindNewVehicles();

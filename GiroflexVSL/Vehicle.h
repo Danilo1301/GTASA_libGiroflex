@@ -7,6 +7,8 @@
 
 class Vehicle {
 public:
+	static int m_LightIdOffset;
+
 	int hVehicle;
 	int modelId;
 	CVector position = CVector(0, 0, 0);
@@ -23,6 +25,8 @@ public:
 	//bool lightsOn = false;
 	//bool lightsPaused = false;
 
+	int ledsTime = 0;
+
 	SirenSystem* sirenSystem;
 
 	Vehicle(int hVehicle, int modelId);
@@ -32,6 +36,9 @@ public:
 	void Destroy();
 	void Update(int dt);
 	void UpdateLightGroups(int dt);
+
+	void RenderBefore();
+	void RenderAfter();
 
 	std::vector<LightGroupData*> GetLightGroupsData();
 
