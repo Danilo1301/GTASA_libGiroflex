@@ -33,6 +33,8 @@ std::vector<MenuStyle> Menu::m_Styles = {
     }
 };
 
+bool Menu::m_Visible = true;
+
 Window* Menu::AddWindow(int gxtId)
 {
     Window* window = new Window();
@@ -205,6 +207,8 @@ void Menu::ShowCredits(int gfxId, int time)
 
 void Menu::Update(int dt)
 {
+    if(!m_Visible) return;
+
     //popup
     m_PopUp->timeLeft -= dt;
     if (m_PopUp->timeLeft < 0) m_PopUp->timeLeft = 0;
@@ -244,6 +248,8 @@ void Menu::Update(int dt)
 
 void Menu::Draw()
 {
+    if(!m_Visible) return;
+    
     m_MainWindow->showTitle = false;
     m_MainWindow->Draw();
 

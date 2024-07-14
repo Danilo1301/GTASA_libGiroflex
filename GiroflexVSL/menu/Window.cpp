@@ -12,9 +12,9 @@ Window::Window()
 
 	width = m_DefaultWindowWidth;
 
-	btnLeft = new Item(eItemType::ITEM_BUTTON);
-	btnRight = new Item(eItemType::ITEM_BUTTON);
-	btnBack = new Item(eItemType::ITEM_BUTTON);
+	btnLeft = new Item(eItemType_old::ITEM_BUTTON_old);
+	btnRight = new Item(eItemType_old::ITEM_BUTTON_old);
+	btnBack = new Item(eItemType_old::ITEM_BUTTON_old);
 
 	auto window = this;
 
@@ -56,7 +56,7 @@ void Window::AddFloatingItem(Item* item)
 
 Item* Window::AddButton(int gxtId, int num1, int num2, CRGBA color)
 {
-	Item* item = new Item(eItemType::ITEM_BUTTON);
+	Item* item = new Item(eItemType_old::ITEM_BUTTON_old);
 	item->drawLabel = false;
 
 	item->text->gxtId = gxtId;
@@ -91,7 +91,7 @@ Item* Window::AddButton(int gxtId, CRGBA color)
 
 Item* Window::AddFloatingButton(int gxtId, int num1, int num2, CVector2D position, CVector2D size, CRGBA color)
 {
-	Item* item = new Item(eItemType::ITEM_BUTTON);
+	Item* item = new Item(eItemType_old::ITEM_BUTTON_old);
 	item->drawLabel = false;
 	//item->useFullWidth = true;
 	item->position = position;
@@ -117,7 +117,7 @@ Item* Window::AddFloatingButton(int gxtId, int num1, int num2, CVector2D positio
 
 Item* Window::AddCheckbox(int gxtId, bool* value)
 {
-	Item* item = new Item(eItemType::CHECKBOX);
+	Item* item = new Item(eItemType_old::CHECKBOX_old);
 	item->drawBox = false;
 	item->useFullWidth = true;
 
@@ -137,7 +137,7 @@ Item* Window::AddCheckbox(int gxtId, bool* value)
 
 Item* Window::AddOptions(int gxtId)
 {
-	Item* item = new Item(eItemType::ITEM_OPTIONS);
+	Item* item = new Item(eItemType_old::ITEM_OPTIONS_old);
 	item->label->gxtId = gxtId;
 
 	item->intValueRange.value = &item->optionsValue;
@@ -154,7 +154,7 @@ Item* Window::AddOptions(int gxtId)
 
 Item* Window::AddFloatRange(int gxtId, float* value, float min, float max, float addBy)
 {
-	Item* item = new Item(eItemType::ITEM_FLOAT_RANGE);
+	Item* item = new Item(eItemType_old::ITEM_FLOAT_RANGE_old);
 	item->label->gxtId = gxtId;
 	item->floatValueRange.value = value;
 	item->floatValueRange.min = min;
@@ -175,7 +175,7 @@ Item* Window::AddFloatRange(int gxtId, float* value, float min, float max, float
 
 Item* Window::AddIntRange(int gxtId, int* value, int min, int max, int addBy)
 {
-	Item* item = new Item(eItemType::ITEM_INT_RANGE);
+	Item* item = new Item(eItemType_old::ITEM_INT_RANGE_old);
 	item->label->gxtId = gxtId;
 	item->intValueRange.value = value;
 	item->intValueRange.min = min;
@@ -195,7 +195,7 @@ Item* Window::AddIntRange(int gxtId, int* value, int min, int max, int addBy)
 
 Item* Window::AddText(int gxtId, int num1, int num2, CRGBA color)
 {
-	Item* item = new Item(eItemType::ITEM_TEXT);
+	Item* item = new Item(eItemType_old::ITEM_TEXT_old);
 
 	item->drawLabel = false;
 
@@ -263,7 +263,7 @@ void Window::Draw()
 	auto style = Menu::GetStyle();
 
 	if(showTitle)
-		Draw::DrawBoxWithText(titleGtxId, 0, 0, pos, CVector2D(width, titleHeight), style->COLOR_TITLE_BOX, CRGBA(255, 255, 255), eTextAlign::ALIGN_LEFT);
+		Draw::DrawBoxWithText(titleGtxId, 0, 0, pos, CVector2D(width, titleHeight), style->COLOR_TITLE_BOX, CRGBA(255, 255, 255), eTextAlign::TEXT_ALIGN_LEFT);
 
 	//
 
@@ -323,7 +323,7 @@ void Window::Draw()
 
 		if (item->drawLabel)
 		{
-			Draw::DrawText(item->label->gxtId, item->label->num1, item->label->num2, CVector2D(pos.x, pos.y + item->box->size.y / 2), item->label->color, eTextAlign::ALIGN_LEFT);
+			Draw::DrawText(item->label->gxtId, item->label->num1, item->label->num2, CVector2D(pos.x, pos.y + item->box->size.y / 2), item->label->color, eTextAlign::TEXT_ALIGN_LEFT);
 		}
 
 

@@ -8,12 +8,15 @@
 #include "WindowFlare.h"
 #include "WindowRotate.h"
 #include "WindowLed.h"
+#include "WindowPanel.h"
 
 #include "ModelInfos.h"
 #include "LightGroupDatas.h"
 #include "Globals.h"
 #include "Vehicles.h"
 #include "Log.h"
+
+
 
 void WindowLightGroups::Create(Window* parent)
 {
@@ -100,7 +103,7 @@ void WindowLightGroups::CreateEditLightGroup(Window* parent, LightGroup* lightGr
 
     auto option_giroflex = window->AddOptions(31);
     option_giroflex->optionsValue = (int)lightGroup->points.size();
-    for(int i = 0; i <= 11; i++)
+    for(int i = 0; i <= 50; i++)
     {
         option_giroflex->AddOption(32, i, 0);
     }
@@ -189,6 +192,7 @@ void WindowLightGroups::CreateEditLightGroup(Window* parent, LightGroup* lightGr
 
     auto button_leds = window->AddButton(100);
     button_leds->onClick = [lightGroup, window]() {
+        //Menu::m_Visible = false;
         WindowLed::Create(window, lightGroup);
     };
 
@@ -212,7 +216,7 @@ void WindowLightGroups::CreateEditLightGroup(Window* parent, LightGroup* lightGr
     auto coronaTexture = window->AddIntRange(55, &lightGroup->coronaTexture, 0, 9, 1);
     coronaTexture->holdToChange = false;
 
-    auto lightSlotId = window->AddIntRange(66, &lightGroup->lightSlotId, 0, 3, 1);
+    auto lightSlotId = window->AddIntRange(66, &lightGroup->lightSlotId, 0, WindowPanel::NumOfSlots-1, 1);
     lightSlotId->holdToChange = false;
 
     auto button_shadow = window->AddButton(56);

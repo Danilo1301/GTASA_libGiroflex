@@ -5,6 +5,7 @@
 #include "eDrawInfoType.h"
 
 #include "SimpleGTA.h"
+#include "menu/MenuStructs.h"
 
 enum eDrawType {
 	BOX,
@@ -13,15 +14,15 @@ enum eDrawType {
 };
 
 enum eTextAlign {
-	ALIGN_LEFT,
-	ALIGN_CENTER,
-	ALIGN_RIGHT
+	TEXT_ALIGN_LEFT,
+	TEXT_ALIGN_CENTER,
+	TEXT_ALIGN_RIGHT
 };
 
 class DrawItem {
 public:
 	eDrawType type = eDrawType::BOX;
-	eTextAlign textAlign = eTextAlign::ALIGN_CENTER;
+	eTextAlign textAlign = eTextAlign::TEXT_ALIGN_CENTER;
 	int gxtId = 0;
 	int num1 = 0;
 	int num2 = 0;

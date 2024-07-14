@@ -189,6 +189,22 @@ OBS: I also found a bug that detects a lightpanel button press before the panel 
 [3.5.0]
 [X] ADD: fucking 3d lights
 
+[3.6.0]
+[X] ADD: option to change start index of lightbar led
+[X] ADD: testing new MenuVSL
+[X] ADD: more slots in light panel
+[X] ADD: increase limit of lights/points
+[X] ADD: make objects rotate (using JSON only)
+
+[X] FIX: reset entries
+
+-----------------------
+NOTES:
+
+[ ] Add libMenuVSL to libs necessárias
+
+-----------------------
+
 Sugest�es:
 
 

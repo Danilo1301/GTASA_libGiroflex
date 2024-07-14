@@ -208,13 +208,13 @@ gosub @SEND_TOUCH
 
 gosub @SEND_PLAYER_POS
 
-0EFA: add_log_message 2
+//0EFA: add_log_message 2
 
 gosub @SEND_CURRENT_CAR
 
 gosub @UPDATE_CARS
 
-0EFA: add_log_message 3
+//0EFA: add_log_message 3
 
 gosub @GET_DELTA_TIME
 
@@ -224,7 +224,7 @@ gosub @CHECK_NEW_VEHICLES
 
 gosub @RENDER_CORONAS
 
-0EFA: add_log_message 4
+//0EFA: add_log_message 4
 
 /*
 03F0: enable_text_draw 1
@@ -1069,5 +1069,21 @@ end
 if VAR_GxtId == 103
 then
      VAR_STR_1 = "DGFX103"
+end
+if VAR_GxtId == 104
+then
+     VAR_STR_1 = "DGFX104"
+end
+if VAR_GxtId == 105
+then
+     VAR_STR_1 = "DGFX105"
+end
+if VAR_GxtId == 106
+then
+     VAR_STR_1 = "DGFX106"
+end
+if VAR_GxtId == 107
+then
+     VAR_STR_1 = "DGFX107"
 end
 return

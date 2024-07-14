@@ -13,15 +13,18 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#include <SimpleGTA.h>
+#include "menu/MenuStructs.h"
+#include "SimpleGTA.h"
 
 #include "json/json.h"
 
 #include "ibass.h"
 
+/*
 static unsigned char ucharIntensity(unsigned char uc, float intensity) {
     return (unsigned char)std::clamp((int)round(((float)uc) * intensity), 0, 255);
 }
+*/
 
 static double DistanceBetween(CVector vec1, CVector vec2)
 {
@@ -123,4 +126,10 @@ static std::string CVectorToString(CVector vec)
 static std::string CVector2DToString(CVector2D vec)
 {
     return "(" + std::to_string(vec.x) + ", " + std::to_string(vec.y) + ")";
+}
+
+static bool StringVectorContainsString(const std::vector<std::string>& vec, const std::string& str)
+{
+    // Utiliza std::find para procurar o std::string no vetor
+    return std::find(vec.begin(), vec.end(), str) != vec.end();
 }

@@ -14,6 +14,7 @@
 #include "windows/WindowEditing.h"
 
 extern void* (*GetVehicleFromRef)(int);
+extern RwMatrix* (*RwMatrixRotate)(RwMatrix* matrix, const RwV3d* axis, RwReal angle, RwOpCombineType combineOp);
 
 static std::list<std::pair<unsigned int *, unsigned int>> resetEntries;
 
@@ -389,6 +390,27 @@ void Vehicle::RenderBefore()
 
         //Log::Level(LOG_LEVEL::LOG_BOTH) << "name: " << name << std::endl;
 
+        //rotate objects
+        for (auto lightGroup : modelInfo->lightGroups)
+        {
+            if(!StringVectorContainsString(lightGroup->rotateObject.objects, to_lower(name)))
+            {
+                continue;
+            }
+
+            auto axisVal = lightGroup->rotateObject.axis;
+
+            RwV3d axis = {
+                (float)(axisVal == eRotateObjectAxis::X ? 1 : 0),
+                (float)(axisVal == eRotateObjectAxis::Y ? 1 : 0),
+                (float)(axisVal == eRotateObjectAxis::Z ? 1 : 0)
+            };
+            RwReal angle = lightGroup->rotateObject.speed;
+
+            RwMatrixRotate(&frameAtomic->modelling, &axis, angle, rwCOMBINEPRECONCAT);
+        }
+
+        //leds
         for (auto lightGroup : modelInfo->lightGroups)
         {
             if(!lightGroup->useLightbarLEDs && !lightGroup->useNormalLEDs) continue;
@@ -406,18 +428,20 @@ void Vehicle::RenderBefore()
 
                 if(lightGroup->useLightbarLEDs)
                 {
-                    if (to_lower(name).compare(to_lower("lightbar-led-" + std::to_string(i + 1))) != 0) continue;
+                    int ledIndex = i + lightGroup->lightbarLEDStartIndex;
+
+                    if (to_lower(name).compare(to_lower("lightbar-led-" + std::to_string(ledIndex))) != 0) continue;
                 }
 
                 if(lightGroup->useNormalLEDs)
                 {
-                    int normalLedIndex = i + lightGroup->normalLEDStartIndex;
+                    int ledIndex = i + lightGroup->normalLEDStartIndex;
 
-                    if (to_lower(name).compare(to_lower("led-" + std::to_string(normalLedIndex))) != 0) continue;
+                    if (to_lower(name).compare(to_lower("led-" + std::to_string(ledIndex))) != 0) continue;
                 }
 
                 //color
-                CRGBA color = CRGBA(255, 255, 255);
+                CRGBA color = lightGroup->ledColorEnabled;
                
                 //
                 int index = i;
@@ -437,7 +461,7 @@ void Vehicle::RenderBefore()
 
                 if (!enabled)
 				{
-					color = CRGBA(0, 0, 0, 255);
+					color = lightGroup->ledColorDisabled;
 				}
 
                 auto materials = VehicleDummy::RpGeometryGetAllMaterials(atomic->geometry);
@@ -455,31 +479,6 @@ void Vehicle::RenderBefore()
         }
     }
 }
-
-/*
-if(name.find("lightbar-led-") == std::string::npos) continue;
-
-auto materials = VehicleDummy::RpGeometryGetAllMaterials(atomic->geometry);
-for (auto material : materials)
-{
-    //if (!material) continue;
-
-    resetEntries.push_back(std::make_pair(reinterpret_cast<unsigned int *>(&material->color), *reinterpret_cast<unsigned int *>(&material->color)));
-
-    if(ledsTime < 1000)
-    {
-        material->color = { 255, 255, 255, 255 };
-    } else {
-        material->color = { 0, 0, 0, 255 };
-    }
-    
-    resetEntries.push_back(std::make_pair(reinterpret_cast<unsigned int *>(&material->surfaceProps), *reinterpret_cast<unsigned int *>(&material->surfaceProps)));
-
-    material->surfaceProps.ambient = 10;
-    material->surfaceProps.diffuse = 10;
-    material->surfaceProps.specular = 10;
-}
-*/
 
 void Vehicle::RenderAfter()
 {

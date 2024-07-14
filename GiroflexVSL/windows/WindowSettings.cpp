@@ -4,6 +4,8 @@
 #include "../ModConfig.h"
 #include "../Patterns.h"
 
+#include "WindowPanel.h"
+
 bool WindowSettings::EditScreenModeEnabled = false;
 
 extern void SaveCfg();
@@ -50,6 +52,9 @@ void WindowSettings::Create(Window* parent)
 	};
 
 	window->AddCheckbox(93, &ModConfig::TurnOnLightsWithSiren);
+
+	auto numSlots = window->AddIntRange(104, &WindowPanel::NumOfSlots, 1, 20, 1);
+	numSlots->holdToChange = false;
 
 	auto test_button = window->AddButton(23);
 	test_button->text->num1 = 1;

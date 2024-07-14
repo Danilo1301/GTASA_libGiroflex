@@ -3,6 +3,7 @@
 #include "pch.h"
 
 #include "Point.h"
+#include "LightGroupRotateObject.h"
 
 class LightGroup {
 public:
@@ -64,8 +65,13 @@ public:
 	float rotateAngle = 0.0f;
 
 	bool useLightbarLEDs = false;
+	int lightbarLEDStartIndex = 1;
 	bool useNormalLEDs = false;
 	int normalLEDStartIndex = 1;
+	CRGBA ledColorEnabled = CRGBA(255, 255, 255);
+	CRGBA ledColorDisabled = CRGBA(0, 0, 0);
+
+	LightGroupRotateObject rotateObject;
 
     LightGroup() {}
 
@@ -180,6 +186,19 @@ public:
 		value["useNormalLEDs"] = useNormalLEDs;
 		value["normalLEDStartIndex"] = normalLEDStartIndex;
 
+		value["ledColorEnabled"] = ColorToJSON(ledColorEnabled);
+		value["ledColorDisabled"] = ColorToJSON(ledColorDisabled);
+
+		//rotate object
+		Json::Value rotateObjectValue = Json::objectValue;
+		rotateObjectValue["speed"] = rotateObject.speed;
+		rotateObjectValue["objects"] = Json::arrayValue;
+		for(auto object : rotateObject.objects)
+		{
+			rotateObjectValue["objects"].append(object);
+		}
+		value["rotateObject"] = rotateObjectValue;
+
 		return value;
 	}
 
@@ -248,5 +267,19 @@ public:
 		useLightbarLEDs = ValidateValue(value["useLightbarLEDs"], useLightbarLEDs).asBool();
 		useNormalLEDs = ValidateValue(value["useNormalLEDs"], useNormalLEDs).asBool();
 		normalLEDStartIndex = ValidateValue(value["normalLEDStartIndex"], normalLEDStartIndex).asInt();
+
+		ledColorEnabled = ValidateColor(value["ledColorEnabled"], ledColorEnabled);
+		ledColorDisabled = ValidateColor(value["ledColorDisabled"], ledColorDisabled);
+
+		//rotate object
+		Json::Value rotateObjectValue = value["rotateObject"];
+		rotateObject.speed = ValidateValue(rotateObjectValue["speed"], rotateObject.speed).asInt();
+
+		rotateObject.objects.clear();
+		for (int i = 0; i < (int)rotateObjectValue["objects"].size(); i++)
+		{
+			auto object = rotateObjectValue["objects"][i].asString();
+			rotateObject.objects.push_back(object);
+		}
 	}
 };

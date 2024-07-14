@@ -24,12 +24,12 @@ void Draw::DrawBoxWithText(int gxtId, int num1, int num2, CVector2D pos, CVector
 	CVector2D textPos = pos;
 	textPos.y += boxSize.y / 2;
 
-	if (align == eTextAlign::ALIGN_CENTER)
+	if (align == eTextAlign::TEXT_ALIGN_CENTER)
 	{
 		textPos.x += boxSize.x / 2;
 	}
 
-	if (align == eTextAlign::ALIGN_RIGHT)
+	if (align == eTextAlign::TEXT_ALIGN_RIGHT)
 	{
 		textPos.x += boxSize.x;
 		
@@ -40,7 +40,7 @@ void Draw::DrawBoxWithText(int gxtId, int num1, int num2, CVector2D pos, CVector
 
 void Draw::DrawBoxWithText(int gxtId, int num1, int num2, CVector2D pos, CVector2D boxSize, CRGBA boxColor, CRGBA textColor)
 {
-	Draw::DrawBoxWithText(gxtId, num1, num2, pos, boxSize, boxColor, textColor, eTextAlign::ALIGN_CENTER);
+	Draw::DrawBoxWithText(gxtId, num1, num2, pos, boxSize, boxColor, textColor, eTextAlign::TEXT_ALIGN_CENTER);
 }
 
 void Draw::DrawText(int gxtId, int num1, int num2, CVector2D pos, CRGBA color, eTextAlign align)
@@ -61,7 +61,7 @@ void Draw::DrawText(int gxtId, int num1, int num2, CVector2D pos, CRGBA color, e
 
 void Draw::DrawText(int gxtId, int num1, int num2, CVector2D pos, CRGBA color)
 {
-	DrawText(gxtId, num1, num2, pos, color, eTextAlign::ALIGN_CENTER);
+	DrawText(gxtId, num1, num2, pos, color, eTextAlign::TEXT_ALIGN_CENTER);
 }
 
 void Draw::DrawSprite(int spriteId, CVector2D pos, CVector2D size, CRGBA color)
@@ -85,12 +85,12 @@ void Draw::DrawSpriteWithText(int spriteId, int gxtId, int num1, int num2, CVect
 	CVector2D textPos = pos;
 	textPos.y += size.y / 2;
 
-	if (align == eTextAlign::ALIGN_CENTER)
+	if (align == eTextAlign::TEXT_ALIGN_CENTER)
 	{
 		textPos.x += size.x / 2;
 	}
 
-	if (align == eTextAlign::ALIGN_RIGHT)
+	if (align == eTextAlign::TEXT_ALIGN_RIGHT)
 	{
 		textPos.x += size.x;
 

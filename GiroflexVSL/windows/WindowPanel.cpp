@@ -20,6 +20,7 @@ I DONT WANT TO CHANGE THIS ANYMORE '-
 
 bool WindowPanel::Visible = false;
 std::vector<PanelButton*> WindowPanel::PanelButtons;
+int WindowPanel::NumOfSlots = 5;
 
 void WindowPanel::Toggle(bool state)
 {
@@ -30,6 +31,8 @@ void WindowPanel::Toggle(bool state)
 	if (Visible)
 	{
 		Create();
+	} else {
+		Remove();
 	}
 }
 
@@ -39,10 +42,27 @@ void WindowPanel::Create()
 	
 	Log::Level(LOG_LEVEL::LOG_BOTH) << "WindowPanel: Create" << std::endl;
 
-	for (int i = 0; i <= 3; i++)
+	for (int i = 0; i < NumOfSlots; i++)
 	{
 		PanelButton* panelButton = new PanelButton();
 		PanelButtons.push_back(panelButton);
+	}
+}
+
+void WindowPanel::Remove()
+{
+	Log::Level(LOG_LEVEL::LOG_BOTH) << "WindowPanel: Remove" << std::endl;
+
+	while(PanelButtons.size() > 0)
+	{
+		auto it = PanelButtons.begin();
+		auto panelButton = *it;
+
+		Log::Level(LOG_LEVEL::LOG_BOTH) << "Removing button" << std::endl;
+
+		PanelButtons.erase(it);
+
+		delete panelButton;
 	}
 }
 

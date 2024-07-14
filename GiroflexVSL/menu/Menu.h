@@ -65,6 +65,8 @@ public:
 	static int m_StyleId;
 	static std::vector<MenuStyle> m_Styles;
 
+	static bool m_Visible;
+
 	static Window* AddWindow(int gxtId);
 	static Window* AddWindow(int gxtId, Window* parent);
 	static Window* AddPositionWindow(Window* parent, CVector* vec, float min, float max, float addBy, std::function<void()> onChange, std::function<void()> onBack);

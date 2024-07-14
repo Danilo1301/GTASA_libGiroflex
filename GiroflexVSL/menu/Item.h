@@ -4,13 +4,13 @@
 
 #include <functional>
 
-enum eItemType {
-	ITEM_TEXT,
-	ITEM_BUTTON,
-	ITEM_OPTIONS,
-	ITEM_INT_RANGE,
-	ITEM_FLOAT_RANGE,
-	CHECKBOX
+enum eItemType_old {
+	ITEM_TEXT_old,
+	ITEM_BUTTON_old,
+	ITEM_OPTIONS_old,
+	ITEM_INT_RANGE_old,
+	ITEM_FLOAT_RANGE_old,
+	CHECKBOX_old
 };
 
 
@@ -80,7 +80,7 @@ public:
 
 	bool useFullWidth = false;
 
-	eItemType type;
+	eItemType_old type;
 
 	bool isPressed = false;
 	bool isPointerOver = false;
@@ -100,7 +100,7 @@ public:
 
 	bool hasPressedThisFrame = false;
 
-	Item(eItemType type);
+	Item(eItemType_old type);
 
 	void AddColorIndicator(CRGBA* color);
 

@@ -11,9 +11,11 @@ class WindowPanel {
 public:
 	static bool Visible;
 	static std::vector<PanelButton*> PanelButtons;
+	static int NumOfSlots;
 
 	static void Toggle(bool state);
 	static void Create();
+	static void Remove();
 	static void Update();
 	static void Draw();
 

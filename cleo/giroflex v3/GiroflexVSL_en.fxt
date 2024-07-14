@@ -3,7 +3,7 @@ DGFX2 ~1~, ~1~
 DGFX3 ~1~, ~1~, ~1~
 DGFX4 <
 DGFX5 >
-DGFX6 Giroflex VSL v3.5.0 (by ~y~Danilo1301~w~)
+DGFX6 Giroflex VSL v3.6.0 (by ~y~Danilo1301~w~)
 DGFX7 Close
 DGFX8 Back
 DGFX9 Edit position
@@ -101,3 +101,7 @@ DGFX100 LEDs
 DGFX101 Enable LEDs lightbar
 DGFX102 Enable LEDs normal
 DGFX103 LED normal - ID
+DGFX104 Amount of panel slots
+DGFX105 Color (enabled)
+DGFX106 Color (disabled)
+DGFX107 Lightbar-LED - ID
