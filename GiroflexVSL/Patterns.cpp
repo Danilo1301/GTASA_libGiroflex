@@ -43,3 +43,16 @@ void Patterns::CreateDefaultPatterns()
     }
     */
 }
+
+std::vector<Pattern*> Patterns::GetCompatiblePatterns(int amountOfLights)
+{
+    std::vector<Pattern*> patterns;
+
+    for (auto pattern : m_Patterns)
+    {
+        if (pattern->steps[0]->data.size() != amountOfLights) continue;
+        patterns.push_back(pattern);
+    }
+
+    return patterns;
+}

@@ -15,6 +15,7 @@
 
 extern void* (*GetVehicleFromRef)(int);
 extern RwMatrix* (*RwMatrixRotate)(RwMatrix* matrix, const RwV3d* axis, RwReal angle, RwOpCombineType combineOp);
+extern RwMatrix* (*RwMatrixTranslate)(RwMatrix* matrix, const RwV3d* translation, RwOpCombineType combineOp);
 
 static std::list<std::pair<unsigned int *, unsigned int>> resetEntries;
 
@@ -140,13 +141,8 @@ void Vehicle::UpdateLightGroups(int dt)
 
         if (!LightGroupDatas::HasLightGroupData(lightGroup, hVehicle))
         {   
-            std::vector<Pattern*> compatiblePatterns;
-            for (auto pattern : Patterns::m_Patterns)
-            {
-                if (pattern->steps[0]->data.size() != lightGroup->points.size()) continue;
-                compatiblePatterns.push_back(pattern);
-            }
-
+            std::vector<Pattern*> compatiblePatterns = lightGroup->GetPatterns();
+            
             if(compatiblePatterns.size() == 0)
             {
                 Log::Level(LOG_LEVEL::LOG_BOTH) << vehicleIdString << "Warning: lightGroup (from id: " << modelInfo->modelId << ") has 0 compatible patterns" << std::endl;
@@ -393,21 +389,26 @@ void Vehicle::RenderBefore()
         //rotate objects
         for (auto lightGroup : modelInfo->lightGroups)
         {
-            if(!StringVectorContainsString(lightGroup->rotateObject.objects, to_lower(name)))
+            for (int i = 0; i < (int)lightGroup->points.size(); i++)
             {
-                continue;
+                auto point = lightGroup->points[i];
+
+                if(to_lower(point->rotateObject.object) != to_lower(name))
+                {
+                    continue;
+                }
+
+                auto axisVal = point->rotateObject.axis;
+
+                RwV3d axis = {
+                    (float)(axisVal == eRotateObjectAxis::X ? 1 : 0),
+                    (float)(axisVal == eRotateObjectAxis::Y ? 1 : 0),
+                    (float)(axisVal == eRotateObjectAxis::Z ? 1 : 0)
+                };
+                RwReal angle = point->rotateObject.speed;
+
+                RwMatrixRotate(&frameAtomic->modelling, &axis, angle, rwCOMBINEPRECONCAT);
             }
-
-            auto axisVal = lightGroup->rotateObject.axis;
-
-            RwV3d axis = {
-                (float)(axisVal == eRotateObjectAxis::X ? 1 : 0),
-                (float)(axisVal == eRotateObjectAxis::Y ? 1 : 0),
-                (float)(axisVal == eRotateObjectAxis::Z ? 1 : 0)
-            };
-            RwReal angle = lightGroup->rotateObject.speed;
-
-            RwMatrixRotate(&frameAtomic->modelling, &axis, angle, rwCOMBINEPRECONCAT);
         }
 
         //leds
@@ -425,6 +426,7 @@ void Vehicle::RenderBefore()
             for (int i = 0; i < (int)lightGroup->points.size(); i++)
             {
                 auto point = lightGroup->points[i];
+                auto amountOfPoints = lightGroup->points.size();
 
                 if(lightGroup->useLightbarLEDs)
                 {
@@ -441,7 +443,18 @@ void Vehicle::RenderBefore()
                 }
 
                 //color
-                CRGBA color = lightGroup->ledColorEnabled;
+                CRGBA color = lightGroup->ledColor1Enabled;
+                if((double)i < ((double)amountOfPoints)/(double)2)
+                {
+                    color = lightGroup->ledColor1Enabled;
+
+                    if(amountOfPoints%2 == 1 && i == std::round(amountOfPoints/2) && amountOfPoints > 2)            
+                    {
+                        color = lightGroup->ledColor3Enabled;
+                    }
+                } else {
+                    color = lightGroup->ledColor2Enabled;
+                }
                
                 //
                 int index = i;
@@ -507,7 +520,7 @@ std::vector<LightGroupData*> Vehicle::GetLightGroupsData()
 	return lightGroupDataList;
 }
 
-void Vehicle::SetGiroflexEnabled(bool enabled)
+void Vehicle::SetGiroflexEnabled(bool enabled, bool forceOn)
 {
     prevLightsState = enabled;
     //lightsPaused = !enabled;
@@ -516,6 +529,11 @@ void Vehicle::SetGiroflexEnabled(bool enabled)
     auto lightGroupDataList = GetLightGroupsData();
     for (auto lightGroupData : lightGroupDataList)
     {
+        if(!forceOn && !lightGroupData->lightsOn && !lightGroupData->lightGroup->enableWithLights)
+        {
+            continue;
+        }
+
         lightGroupData->lightsOn = enabled;
     }
 
@@ -527,4 +545,18 @@ void Vehicle::SetGiroflexEnabled(bool enabled)
 		lightGroupData->stepLoop->DontChangeSteps = !enabled;
 	}
 	*/
+}
+
+void Vehicle::ResetObjectRotation(std::string object)
+{
+	auto frame = VehicleDummy::FindDummy(pVehicle, object);
+
+	if (!frame) return;
+
+	RwV3d axis = {0, 0, 0};
+	RwReal angle = 0.0f;
+	RwV3d pos = (RwV3d)frame->modelling.pos;
+	
+	RwMatrixRotate(&frame->modelling, &axis, angle, rwCOMBINEREPLACE);
+	RwMatrixTranslate(&frame->modelling, &pos, rwCOMBINEREPLACE);
 }

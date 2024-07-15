@@ -14,4 +14,6 @@ public:
 	static Pattern* GetPatternById(std::string name);
 
 	static void CreateDefaultPatterns();
+
+	static std::vector<Pattern*> GetCompatiblePatterns(int amountOfLights);
 };

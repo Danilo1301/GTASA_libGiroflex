@@ -9,14 +9,13 @@
 #include "WindowRotate.h"
 #include "WindowLed.h"
 #include "WindowPanel.h"
+#include "WindowPatterns.h"
 
 #include "ModelInfos.h"
 #include "LightGroupDatas.h"
 #include "Globals.h"
 #include "Vehicles.h"
 #include "Log.h"
-
-
 
 void WindowLightGroups::Create(Window* parent)
 {
@@ -196,6 +195,12 @@ void WindowLightGroups::CreateEditLightGroup(Window* parent, LightGroup* lightGr
         WindowLed::Create(window, lightGroup);
     };
 
+    auto patterns = window->AddButton(108);
+    patterns->onClick = [window, lightGroup]() {
+        Menu::m_Visible = false;
+        WindowPatterns::Create(window, lightGroup);
+    };
+
     //auto lightIdOffset = window->AddIntRange(23, &Vehicle::m_LightIdOffset, -100000, 100000, 1);
 
     auto patternOffset = window->AddIntRange(76, &lightGroup->patternOffset, 0, 10, 1);
@@ -261,6 +266,8 @@ void WindowLightGroups::CreateEditLightGroup(Window* parent, LightGroup* lightGr
 
     window->AddCheckbox(42, &lightGroup->freezeLights);
 
+    window->AddCheckbox(109, &lightGroup->enableWithLights);
+
     //window->AddCheckbox(93, &lightGroup->enableOnSpawn);
 
     auto button_duplicate = window->AddButton(68);
@@ -288,7 +295,7 @@ void WindowLightGroups::CreateEditLightGroup(Window* parent, LightGroup* lightGr
             Menu::RemoveAllWindows();
 
             WindowMain::Remove();
-            WindowMain::Create(modelId);
+            WindowMain::Create(vehicle);
         }, []() {
 
         });
@@ -317,7 +324,7 @@ void WindowLightGroups::CreateEditLightGroup(Window* parent, LightGroup* lightGr
             Menu::RemoveAllWindows();
 
             WindowMain::Remove();
-            WindowMain::Create(modelId);
+            WindowMain::Create(vehicle);
         }, []() {
 
         });
@@ -373,5 +380,11 @@ void WindowLightGroups::CreateEditPoint(Window* parent, LightGroup* lightGroup, 
     button_color->AddColorIndicator(&point->customColor);
     button_color->onClick = [point, window]() {
         Menu::AddColorMenu(window, &point->customColor);
+    };
+
+    auto rotateObject = window->AddButton(94);
+    rotateObject->onClick = [window, lightGroup, point]() {
+        Menu::m_Visible = false;
+        WindowRotate::CreatePointRotate(window, lightGroup, point);
     };
 }

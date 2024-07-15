@@ -126,6 +126,15 @@ static int colormenu_g = 0;
 static int colormenu_b = 0;
 static int colormenu_a = 0;
 
+std::vector<CRGBA> colors = {
+    {255, 0, 0, 255},
+    {0, 0, 255, 255},
+    {255, 255, 255, 255},
+    {255, 255, 0, 255},
+    {0, 255, 0, 255},
+    {0, 0, 0, 255},
+};
+
 Window* Menu::AddColorMenu(Window* parent, CRGBA* color, std::function<void()> onValueChange)
 {
     Window* window = AddWindow(13, parent);
@@ -147,6 +156,39 @@ Window* Menu::AddColorMenu(Window* parent, CRGBA* color, std::function<void()> o
     option_g->onValueChange = [color, onValueChange]() { color->g = colormenu_g; onValueChange(); };
     option_b->onValueChange = [color, onValueChange]() { color->b = colormenu_b; onValueChange(); };
     option_a->onValueChange = [color, onValueChange]() { color->a = colormenu_a; onValueChange(); };
+
+    auto selectColor = window->AddButton(13, GetStyle()->COLOR_BUTTON_DEFAULT);
+    selectColor->onClick = [window, color]() {
+        auto window2 = AddWindow(13, window);
+        window2->width = 200.0f;
+        window2->position = { 10, 200 };
+        window2->showPageControls = true;
+
+        for(int i = 0; i < colors.size(); i++)
+        {
+            auto button = window2->AddButton(1, colors[i]);
+            button->text->num1 = i;
+
+            button->onClick = [color, window2, i]() {         
+                color->r = colors[i].r;
+                color->g = colors[i].g;
+                color->b = colors[i].b;
+                color->a = colors[i].a;
+
+                colormenu_r = color->r;
+                colormenu_g = color->g;
+                colormenu_b = color->b;
+                colormenu_a = color->a;
+                
+                window2->GoToPrevWindow();
+            };
+        }
+
+        window2->btnBack->onClick = [window2]()
+        {
+            window2->GoToPrevWindow();
+        };
+    };
 
     window->btnBack->onClick = [window]()
     {

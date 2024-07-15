@@ -16,7 +16,7 @@
 // ---------------------------------------
 
 //MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, Mod::m_Version, Danilo1301) //whoops
-MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.6.0, Danilo1301)
+MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.7.0, Danilo1301)
 
 // ---------------------------------------
 
@@ -65,6 +65,7 @@ RwBool (*RwTextureSetAutoMipmapping)(RwBool enable);
 RwTexture* (*RwTextureCreate)(RwRaster* raster);
 RwUInt8* (*RwRasterLock)(RwRaster* raster, RwUInt8 level, RwInt32 lockMode);
 RwMatrix* (*RwMatrixRotate)(RwMatrix* matrix, const RwV3d* axis, RwReal angle, RwOpCombineType combineOp);
+RwMatrix* (*RwMatrixTranslate)(RwMatrix* matrix, const RwV3d* translation, RwOpCombineType combineOp);
 
 void (*CFont_PrintString)(float x, float y, unsigned short* text);
 void (*AsciiToGxtChar)(const char* txt, unsigned short* ret);
@@ -313,6 +314,7 @@ void LoadSymbols()
     SET_TO(RwTextureCreate, aml->GetSym(hGTASA, "_Z15RwTextureCreateP8RwRaster"));
     SET_TO(RwRasterLock, aml->GetSym(hGTASA, "_Z12RwRasterLockP8RwRasterhi"));
     SET_TO(RwMatrixRotate, aml->GetSym(hGTASA, "_Z14RwMatrixRotateP11RwMatrixTagPK5RwV3df15RwOpCombineType"));    
+    SET_TO(RwMatrixTranslate, aml->GetSym(hGTASA, "_Z17RwMatrixTranslateP11RwMatrixTagPK5RwV3d15RwOpCombineType"));
 
     SET_TO(CFont_PrintString, aml->GetSym(hGTASA, "_ZN5CFont11PrintStringEffPt"));
     SET_TO(AsciiToGxtChar, aml->GetSym(hGTASA, "_Z14AsciiToGxtCharPKcPt"));
@@ -545,6 +547,16 @@ extern "C" void OnModLoad()
     */
 
     ModConfig::Save();
+
+    for(auto p : ModelInfos::m_ModelInfos)
+    {
+        auto modelInfo = p.second;
+
+        for(auto lightGroup : modelInfo->lightGroups)
+        {
+            lightGroup->Update();
+        }
+    }
 
     //
 

@@ -8,15 +8,19 @@
 #include "Log.h"
 
 Window* WindowMain::m_Window = NULL;
+Vehicle* WindowMain::m_Vehicle = NULL;
 int WindowMain::m_ModelId = 0;
 
-void WindowMain::Create(int modelId)
+void WindowMain::Create(Vehicle* vehicle)
 {
     if (m_Window) return;
 
-    Log::Level(LOG_LEVEL::LOG_BOTH) << "WindowMain: Create for modelId " << modelId << std::endl;
+    m_Vehicle = vehicle;
+    m_ModelId = vehicle->modelId;
 
-    m_ModelId = modelId;
+    auto modelId = m_ModelId;
+
+    Log::Level(LOG_LEVEL::LOG_BOTH) << "WindowMain: Create for modelId " << modelId << std::endl;
 
     auto window = m_Window = Menu::AddWindow(6);
     window->position = CVector2D(80, 200);

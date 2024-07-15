@@ -42,5 +42,6 @@ public:
 
 	std::vector<LightGroupData*> GetLightGroupsData();
 
-	void SetGiroflexEnabled(bool enabled);
+	void SetGiroflexEnabled(bool enabled, bool forceOn = false);
+	void ResetObjectRotation(std::string object);
 };

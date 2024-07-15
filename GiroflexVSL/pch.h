@@ -14,6 +14,7 @@
 #include <cmath>
 
 #include "menu/MenuStructs.h"
+#include "menu/SimpleGTA.h"
 #include "SimpleGTA.h"
 
 #include "json/json.h"
@@ -126,10 +127,4 @@ static std::string CVectorToString(CVector vec)
 static std::string CVector2DToString(CVector2D vec)
 {
     return "(" + std::to_string(vec.x) + ", " + std::to_string(vec.y) + ")";
-}
-
-static bool StringVectorContainsString(const std::vector<std::string>& vec, const std::string& str)
-{
-    // Utiliza std::find para procurar o std::string no vetor
-    return std::find(vec.begin(), vec.end(), str) != vec.end();
 }

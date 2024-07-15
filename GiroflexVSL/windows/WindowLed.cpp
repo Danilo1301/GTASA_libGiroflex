@@ -22,10 +22,37 @@ void WindowLed::Create(Window* parent, LightGroup* lightGroup)
     auto normalLEDStartIndex = window->AddIntRange(103, &lightGroup->normalLEDStartIndex, 1, 10000, 1);
     normalLEDStartIndex->holdToChange = false;
 
-    auto colorEnabled = window->AddButton(105);
-    colorEnabled->AddColorIndicator(&lightGroup->ledColorEnabled);
-    colorEnabled->onClick = [lightGroup, window]() {
-        Menu::AddColorMenu(window, &lightGroup->ledColorEnabled);
+    auto color = window->AddButton(75);
+    color->onClick = [lightGroup, window]() {
+        CreateColor(window, lightGroup);
+    };
+}
+
+void WindowLed::CreateColor(Window* parent, LightGroup* lightGroup)
+{
+    auto window = Menu::AddWindow(100, parent);
+    window->showPageControls = true;
+    window->btnBack->onClick = [window]()
+    {
+        window->GoToPrevWindow();
+    };
+
+    auto colorEnabled1 = window->AddButton(48);
+    colorEnabled1->AddColorIndicator(&lightGroup->ledColor1Enabled);
+    colorEnabled1->onClick = [lightGroup, window]() {
+        Menu::AddColorMenu(window, &lightGroup->ledColor1Enabled);
+    };
+
+    auto colorEnabled2 = window->AddButton(49);
+    colorEnabled2->AddColorIndicator(&lightGroup->ledColor2Enabled);
+    colorEnabled2->onClick = [lightGroup, window]() {
+        Menu::AddColorMenu(window, &lightGroup->ledColor2Enabled);
+    };
+
+    auto colorEnabled3 = window->AddButton(50);
+    colorEnabled3->AddColorIndicator(&lightGroup->ledColor3Enabled);
+    colorEnabled3->onClick = [lightGroup, window]() {
+        Menu::AddColorMenu(window, &lightGroup->ledColor3Enabled);
     };
 
     auto colorDisabled = window->AddButton(106);

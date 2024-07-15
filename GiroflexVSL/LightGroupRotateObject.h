@@ -13,5 +13,5 @@ struct LightGroupRotateObject {
 	bool rotateAlways = true;
 	float speed = 5.0f;
 	eRotateObjectAxis axis = eRotateObjectAxis::Z;
-	std::vector<std::string> objects;
+	std::string object = "[none]";
 };

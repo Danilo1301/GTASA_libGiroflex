@@ -5,9 +5,10 @@
 #include "rw/rwplcore.h"
 #include "rw/rpworld.h"
 #include "menu/MenuStructs.h"
+#include "menu/SimpleGTA.h"
 
-#define RwV2d CVector2D
-#define RwV3d CVector
+//#define RwV2d CVector2D
+//#define RwV3d CVector
 
 struct IntVector2D // not original
 {
@@ -170,18 +171,3 @@ struct GTAVehicleSA : GTAEntity
 static RwFrame* GetObjectParent(RwObject *obj) {
     return reinterpret_cast<RwFrame *>(rwObjectGetParent(obj));
 }
-class CSprite2d {
-public:
-	// class variables
-	struct RwTexture *m_pTexture;
-	// static variables
-	//static unsigned int& nextBufferIndex;
-	//static unsigned int& nextBufferVertex;
-	//static float& NearScreenZ;
-	//static float& RecipNearClip;
-	// count: 8
-	//static struct RwD3D9Vertex *maVertices;
-	// class functions
-	//CSprite2d();
-	//~CSprite2d();
-};

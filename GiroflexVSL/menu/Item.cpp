@@ -33,7 +33,7 @@ Item::Item(eItemType_old type)
 
 void Item::AddColorIndicator(CRGBA* color)
 {
-	ColorIndicator colorIndicator = { color };
+	ColorIndicator_old colorIndicator = { color };
 	colorIndicators.push_back(colorIndicator);
 }
 
@@ -56,7 +56,7 @@ void Item::AddOptionBy(int addBy)
 
 void Item::AddOption(int gxtId, int num1, int num2)
 {
-	Option option = { gxtId, num1, num2 };
+	Option_old option = { gxtId, num1, num2 };
 	options.push_back(option);
 }
 

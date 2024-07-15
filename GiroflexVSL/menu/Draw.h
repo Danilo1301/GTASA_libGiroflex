@@ -6,6 +6,7 @@
 
 #include "SimpleGTA.h"
 #include "menu/MenuStructs.h"
+#include "menu/SimpleGTA.h"
 
 enum eDrawType {
 	BOX,

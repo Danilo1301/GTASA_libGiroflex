@@ -14,14 +14,14 @@ enum eItemType_old {
 };
 
 
-struct Option
+struct Option_old
 {
 	int gxtId = 1;
 	int num1 = 3;
 	int num2 = 4;
 };
 
-struct ColorIndicator
+struct ColorIndicator_old
 {
 	CRGBA* color;
 };
@@ -52,9 +52,9 @@ public:
 	Item* btnLeft = NULL;
 	Item* btnRight = NULL;
 
-	std::vector<Option> options;
+	std::vector<Option_old> options;
 
-	std::vector<ColorIndicator> colorIndicators;
+	std::vector<ColorIndicator_old> colorIndicators;
 
 	std::vector<DrawItem*> extraTexts;
 

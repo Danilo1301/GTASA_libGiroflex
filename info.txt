@@ -194,7 +194,14 @@ OBS: I also found a bug that detects a lightpanel button press before the panel 
 [X] ADD: testing new MenuVSL
 [X] ADD: more slots in light panel
 [X] ADD: increase limit of lights/points
-[X] ADD: make objects rotate (using JSON only)
+[X] ADD: make objects rotate
+
+[3.7.0]
+[X] ADD: painel to make objects rotate
+[X] ADD: customize patterns for each lightgroup
+[X] ADD: option to disable lights to turn with others lights
+[X] ADD: select color by a list of pre-defined colors
+[X] ADD: speed and axis to point rotate window
 
 [X] FIX: reset entries
 

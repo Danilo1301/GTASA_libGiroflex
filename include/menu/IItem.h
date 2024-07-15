@@ -3,7 +3,7 @@
 #include <iostream>
 #include <functional>
 
-#include "MenuStructs.h"
+#include "SimpleGTA.h"
 
 enum eItemType {
     ITEM_NONE,
@@ -13,6 +13,17 @@ enum eItemType {
 	ITEM_INT_RANGE,
 	ITEM_FLOAT_RANGE,
 	ITEM_CHECKBOX
+};
+
+struct ColorIndicator
+{
+	CRGBA* color;
+};
+
+struct Option
+{
+	int value = 0;
+	std::string name = "";
 };
 
 class IItem {
@@ -28,20 +39,37 @@ public:
 	bool m_CanBeSelected = true;
 	bool m_DrawTextAtCenter = false;
 	float m_OptionsTextWidth = 100.0f;
+	bool m_Visible = true;
+	std::string* m_StringAtRight = NULL;
 	
 	std::function<void()> onClick;
 	std::function<void()> onValueChange;
+	std::function<void()> onUpdate;
 
 	bool waitingForTouchRelease = false;
 	bool hasPressedThisFrame = false;
 	bool isPointerOver = false;
 	bool isPressed = false;
 
-	//checkbox
 	bool* pCheckBoxBool = NULL;
 	bool tmpBool = false;
 	int tmpInt = 0;
 	float tmpFloat = 0;
 
+	int m_OptionsSelectedIndex = 0;
+
 	bool m_HoldToChange = false;
+	
+	std::vector<ColorIndicator> m_ColorIndicators;
+
+	std::vector<Option> m_Options;
+
+	/*1.0.0*/
+
+	/*1.1.0*/
+	virtual void AddColorIndicator(CRGBA* color) = 0;
+	virtual void AddOption(int value, std::string name) = 0;
+	virtual void SetCurrentOption(int value) = 0;
+	virtual Option GetCurrentOption() = 0;
+	virtual bool GetCheckboxValue() = 0;
 };
