@@ -180,6 +180,8 @@ Json::Value LightGroup::ToJSON()
     }
     value["patterns"] = patternsValue;
 
+    value["direction"] = (int)direction;
+
     return value;
 }
 
@@ -265,6 +267,8 @@ void LightGroup::FromJSON(Json::Value value)
             patterns[id] = value;
         }
     }
+
+    direction = (eSirenDirection)ValidateValue(value["direction"], (int)direction).asInt();
 }
 
 std::vector<Pattern*> LightGroup::GetPatterns()

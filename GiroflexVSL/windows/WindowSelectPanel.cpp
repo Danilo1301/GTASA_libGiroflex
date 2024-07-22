@@ -7,6 +7,8 @@
 
 #include "../Log.h"
 
+#include "IMultiSiren.h"
+extern IMultiSiren* multiSiren;
 
 Window* WindowSelectPanel::m_Window = NULL;
 
@@ -42,7 +44,13 @@ void WindowSelectPanel::Create()
 	button_audio_panel->onClick = [window]()
 	{
 		Remove();
-		WindowSoundPanel::Toggle(true);
+
+		if(multiSiren)
+		{
+			multiSiren->ToggleAudioPanel();
+		} else {
+			WindowSoundPanel::Toggle(true);
+		}
 	};
 
 	auto button_close = window->AddButton(7, CRGBA(170, 70, 70));

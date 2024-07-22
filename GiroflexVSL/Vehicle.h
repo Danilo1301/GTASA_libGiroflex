@@ -36,6 +36,7 @@ public:
 	void Destroy();
 	void Update(int dt);
 	void UpdateLightGroups(int dt);
+	void OnUpdateGameLogic();
 
 	void RenderBefore();
 	void RenderAfter();

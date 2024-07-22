@@ -13,9 +13,14 @@
 
 #include "windows/WindowEditing.h"
 
+#include "menu/IMenuVSL.h"
+extern IMenuVSL* menuVSL;
+
 extern void* (*GetVehicleFromRef)(int);
 extern RwMatrix* (*RwMatrixRotate)(RwMatrix* matrix, const RwV3d* axis, RwReal angle, RwOpCombineType combineOp);
 extern RwMatrix* (*RwMatrixTranslate)(RwMatrix* matrix, const RwV3d* translation, RwOpCombineType combineOp);
+
+extern void (*RegisterCorona)(unsigned int id, void* attachTo, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha, CVector const& posn, float radius, float farClip, int coronaType, int flaretype, bool enableReflection, bool checkObstacles, int _param_not_used, float angle, bool longDistance, float nearClip, unsigned char fadeState, float fadeSpeed, bool onlyFromBelow, bool reflectionDelay);
 
 static std::list<std::pair<unsigned int *, unsigned int>> resetEntries;
 
@@ -300,13 +305,30 @@ void Vehicle::UpdateLightGroups(int dt)
                 if (WindowEditing::LightGroupToShow != lightGroup) enabled = false;
             }
 
+            //menuVSL->debug->m_Visible = true;
+
+            auto radius = lightGroup->radius;
+
+            auto positionY = lightGroup->offset.y + point->customOffset.y;
+            auto angle = Point::GetAngle(pVehicle, lightGroup->offset + point->customOffset);
+            
+            auto radiusMult = point->GetRadiusMultiplier(angle, lightGroup->direction, positionY);
+
+            radius = lightGroup->radius * radiusMult;
+        
+            //menuVSL->debug->AddLine("vehicle: " + std::to_string(hVehicle));
+            //menuVSL->debug->AddLine("angle: " + std::to_string(angle));
+            //menuVSL->debug->AddLine("rad mul: " + std::to_string(radiusMult));
+            //menuVSL->debug->AddLine("radius: " + std::to_string(radius));
+            
+
             RenderCorona corona;
             corona.car = hVehicle;
             corona.pVehicle = pVehicle;
             corona.id = lightId++;
             corona.color = color;
             corona.offset = CVector(x, y, 0) + lightGroup->offset + point->customOffset;
-            corona.radius = enabled ? lightGroup->radius : 0.0f;
+            corona.radius = enabled ? radius : 0.0f;
             corona.renderShadow = enabled ? lightGroup->renderShadow : false;
             corona.renderPointLight = enabled ? lightGroup->renderPointLight : false;
 
@@ -367,6 +389,68 @@ void Vehicle::UpdateLightGroups(int dt)
     }
 }
 
+void Vehicle::OnUpdateGameLogic()
+{
+    return;
+    
+    auto lightId = hVehicle + Vehicle::m_LightIdOffset + 100;
+
+    auto position = pVehicle->m_matrix->pos;
+
+    //menuVSL->debug->AddLine("Register at "+ CVectorToString(position));
+    //Log::Level(LOG_LEVEL::LOG_BOTH) << "Register corona at " << CVectorToString(position) << std::endl;
+
+    RegisterCorona(
+        lightId++,
+        NULL,
+        255,
+        0,
+        0,
+        255,
+        { position.x, position.y, position.z },
+        2.0f,
+        1000.0f,
+        0,
+        0,
+        true,
+        false,
+        0,
+        0.0f,
+        false,
+        0.0f,
+        0,
+        10000.0f,
+        false,
+        false
+    );
+
+    auto position2 = TransformFromObjectSpace(pVehicle, CVector(10, 0, 0));
+
+    RegisterCorona(
+        lightId++,
+        NULL,
+        0,
+        255,
+        0,
+        255,
+        { position2.x, position2.y, position2.z },
+        2.0f,
+        1000.0f,
+        0,
+        0,
+        true,
+        false,
+        0,
+        0.0f,
+        false,
+        0.0f,
+        0,
+        10000.0f,
+        false,
+        false
+    );
+}
+
 void Vehicle::RenderBefore()
 {
     if (!ModelInfos::HasModelInfo(modelId)) return;
@@ -389,13 +473,42 @@ void Vehicle::RenderBefore()
         //rotate objects
         for (auto lightGroup : modelInfo->lightGroups)
         {
+            LightGroupData* lightGroupData = LightGroupDatas::GetLightGroupData(lightGroup, hVehicle);
+
+            if (!lightGroupData)
+            {
+                continue;
+            }
+
             for (int i = 0; i < (int)lightGroup->points.size(); i++)
             {
                 auto point = lightGroup->points[i];
+                auto index = i;
 
                 if(to_lower(point->rotateObject.object) != to_lower(name))
                 {
                     continue;
+                }
+
+                //
+                bool enabled = lightGroupData->GetPointIsEnabled(point, index);
+                
+                if (lightGroup->freezeLights) enabled = true;
+
+                if (!lightGroupData->lightsOn && !lightGroup->alwaysEnabled) enabled = false;
+
+                if (WindowEditing::FreezeLights) enabled = true;
+
+                if (WindowEditing::ShowCurrentEditingLightGroup)
+                {
+                    if (WindowEditing::LightGroupToShow != lightGroup) enabled = false;
+                }
+
+                //
+
+                if(!point->rotateObject.rotateAlways)
+                {
+                    if(!lightGroupData->lightsOn) continue;
                 }
 
                 auto axisVal = point->rotateObject.axis;

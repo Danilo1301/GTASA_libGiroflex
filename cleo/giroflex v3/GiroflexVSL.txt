@@ -1094,4 +1094,20 @@ if VAR_GxtId == 109
 then
      VAR_STR_1 = "DGFX109"
 end
+if VAR_GxtId == 110
+then
+     VAR_STR_1 = "DGFX110"
+end
+if VAR_GxtId == 111
+then
+     VAR_STR_1 = "DGFX111"
+end
+if VAR_GxtId == 112
+then
+     VAR_STR_1 = "DGFX112"
+end
+if VAR_GxtId == 113
+then
+     VAR_STR_1 = "DGFX113"
+end
 return

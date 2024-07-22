@@ -3,7 +3,7 @@ DGFX2 ~1~, ~1~
 DGFX3 ~1~, ~1~, ~1~
 DGFX4 <
 DGFX5 >
-DGFX6 Giroflex VSL v3.7.0 (by ~y~Danilo1301~w~)
+DGFX6 Giroflex VSL v3.7.1 (by ~y~Danilo1301~w~)
 DGFX7 Fechar
 DGFX8 Voltar
 DGFX9 Editar posicao
@@ -107,3 +107,7 @@ DGFX106 Cor (desligado)
 DGFX107 Lightbar-LED - ID
 DGFX108 Patterns
 DGFX109 Ativar com as luzes
+DGFX110 Direcao das luzes
+DGFX111 FRENTE
+DGFX112 AMBOS
+DGFX113 TRAS

@@ -443,12 +443,17 @@ void WindowSoundPanel::CreateStyle4()
 
 void WindowSoundPanel::Update(int dt)
 {
+	if(Globals::m_UsingMultiSiren)
+	{
+		return;
+	}
+
 	if(modPolicia)
 	{
 		if(modPolicia->IsRadioOpen()) return;
 		if(modPolicia->IsMenuOpen()) return;
 	}
-	
+
 	if(auto vehicle = Globals::GetPlayerVehicle())
 	{
 		prevVehicle = vehicle;
@@ -571,6 +576,11 @@ void WindowSoundPanel::Update(int dt)
 
 void WindowSoundPanel::Draw()
 {
+	if(Globals::m_UsingMultiSiren)
+	{
+		return;
+	}
+
 	if(modPolicia)
 	{
 		if(modPolicia->IsRadioOpen()) return;

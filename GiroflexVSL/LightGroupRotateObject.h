@@ -10,7 +10,7 @@ enum class eRotateObjectAxis {
 
 struct LightGroupRotateObject {
 	bool rotate = true;
-	bool rotateAlways = true;
+	bool rotateAlways = false;
 	float speed = 5.0f;
 	eRotateObjectAxis axis = eRotateObjectAxis::Z;
 	std::string object = "[none]";

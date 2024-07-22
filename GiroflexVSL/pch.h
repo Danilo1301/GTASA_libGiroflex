@@ -21,6 +21,11 @@
 
 #include "ibass.h"
 
+extern RwMatrix* (*RwMatrixTranslate)(RwMatrix* matrix, const RwV3d* translation, RwOpCombineType combineOp);
+extern RwReal (*RwV3dNormalize)(RwV3d* out, const RwV3d* in);
+extern void (*CMatrix_CopyToRwMatrix)(CMatrix*, RwMatrix *matrix);
+extern RwMatrix* (*RwMatrixCreate)(void);
+
 /*
 static unsigned char ucharIntensity(unsigned char uc, float intensity) {
     return (unsigned char)std::clamp((int)round(((float)uc) * intensity), 0, 255);
@@ -127,4 +132,52 @@ static std::string CVectorToString(CVector vec)
 static std::string CVector2DToString(CVector2D vec)
 {
     return "(" + std::to_string(vec.x) + ", " + std::to_string(vec.y) + ")";
+}
+
+static double GetAngleBetweenVectors(CVector v1, CVector v2, CVector v3)
+{
+	double v12 = sqrt(pow(v1.x - v2.x, 2) + pow(v1.y - v2.y, 2));
+	double v13 = sqrt(pow(v1.x - v3.x, 2) + pow(v1.y - v3.y, 2));
+	double v23 = sqrt(pow(v2.x - v3.x, 2) + pow(v2.y - v3.y, 2));
+	return acos((pow(v12, 2) + pow(v13, 2) - pow(v23, 2)) / (2 * (v12 * v13)));
+}
+
+static CVector TransformFromObjectSpace(CEntity* entity, CVector pos)
+{
+	RwMatrix* matrix = RwMatrixCreate();
+	
+	//entity->m_matrix->CopyToRwMatrix(matrix);
+	CMatrix_CopyToRwMatrix(entity->m_matrix, matrix);
+
+	RwV3d forward = { matrix->up.x, matrix->up.y, matrix->up.z };
+	RwV3d right = { matrix->right.x, matrix->right.y, matrix->right.z };
+	RwV3d up = { matrix->at.x, matrix->at.y, matrix->at.z };
+
+	RwV3dNormalize(&forward, &forward);
+	RwV3dNormalize(&right, &right);
+	RwV3dNormalize(&up, &up);
+
+	RwV3d translate;
+	translate.x = forward.x * pos.y;
+	translate.y = forward.y * pos.y;
+	translate.z = forward.z * pos.y;
+
+	translate.x += right.x * pos.x;
+	translate.y += right.y * pos.x;
+	translate.z += right.z * pos.x;
+
+	translate.x += up.x * pos.z;
+	translate.y += up.y * pos.z;
+	translate.z += up.z * pos.z;
+	
+	//RwIm3DTransform
+	
+	// Translate the matrix
+	RwMatrixTranslate(matrix, &translate, rwCOMBINEPOSTCONCAT);
+
+	auto finalPos = CVector(matrix->pos.x, matrix->pos.y, matrix->pos.z);
+
+	//RwMatrixDestroy(matrix);
+
+	return finalPos;
 }

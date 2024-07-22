@@ -16,7 +16,7 @@
 // ---------------------------------------
 
 //MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, Mod::m_Version, Danilo1301) //whoops
-MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.7.0, Danilo1301)
+MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.7.1, Danilo1301)
 
 // ---------------------------------------
 
@@ -41,6 +41,8 @@ IModPolicia* modPolicia = NULL;
 #include "menu/IMenuVSL.h"
 IMenuVSL* menuVSL = NULL;
 
+#include "IMultiSiren.h"
+IMultiSiren* multiSiren = NULL;
 
 #include "GiroflexVSL.h"
 
@@ -66,6 +68,9 @@ RwTexture* (*RwTextureCreate)(RwRaster* raster);
 RwUInt8* (*RwRasterLock)(RwRaster* raster, RwUInt8 level, RwInt32 lockMode);
 RwMatrix* (*RwMatrixRotate)(RwMatrix* matrix, const RwV3d* axis, RwReal angle, RwOpCombineType combineOp);
 RwMatrix* (*RwMatrixTranslate)(RwMatrix* matrix, const RwV3d* translation, RwOpCombineType combineOp);
+RwReal (*RwV3dNormalize)(RwV3d* out, const RwV3d* in);
+void (*CMatrix_CopyToRwMatrix)(CMatrix*, RwMatrix *matrix);
+RwMatrix* (*RwMatrixCreate)(void);
 
 void (*CFont_PrintString)(float x, float y, unsigned short* text);
 void (*AsciiToGxtChar)(const char* txt, unsigned short* ret);
@@ -96,6 +101,13 @@ DECL_HOOK(void*, UpdateGameLogic, uintptr_t a1)
 {
     if(BASS) {
         soundsys->Update();
+    }
+
+    for(auto p : Vehicles::m_Vehicles)
+    {
+        auto vehicle = p.second;
+
+        vehicle->OnUpdateGameLogic();
     }
 
     return UpdateGameLogic(a1);
@@ -315,6 +327,9 @@ void LoadSymbols()
     SET_TO(RwRasterLock, aml->GetSym(hGTASA, "_Z12RwRasterLockP8RwRasterhi"));
     SET_TO(RwMatrixRotate, aml->GetSym(hGTASA, "_Z14RwMatrixRotateP11RwMatrixTagPK5RwV3df15RwOpCombineType"));    
     SET_TO(RwMatrixTranslate, aml->GetSym(hGTASA, "_Z17RwMatrixTranslateP11RwMatrixTagPK5RwV3d15RwOpCombineType"));
+    SET_TO(RwV3dNormalize, aml->GetSym(hGTASA, "_Z14RwV3dNormalizeP5RwV3dPKS_"));
+    SET_TO(CMatrix_CopyToRwMatrix, aml->GetSym(hGTASA, "_ZNK7CMatrix14CopyToRwMatrixEP11RwMatrixTag"));
+    SET_TO(RwMatrixCreate, aml->GetSym(hGTASA, "_Z14RwMatrixCreatev"));
 
     SET_TO(CFont_PrintString, aml->GetSym(hGTASA, "_ZN5CFont11PrintStringEffPt"));
     SET_TO(AsciiToGxtChar, aml->GetSym(hGTASA, "_Z14AsciiToGxtCharPKcPt"));
@@ -377,14 +392,6 @@ extern "C" void OnModLoad()
     //cfg->Save();
 
     SaveCfg();
-
-    if(aml->HasModOfVersion("net.danilo1301.multisiren", "1.0.0"))
-    {
-        Log::Level(LOG_LEVEL::LOG_BOTH) << "MultiSiren is installed" << std::endl;
-        Globals::m_UsingMultiSiren = true;
-    } else {
-        Log::Level(LOG_LEVEL::LOG_BOTH) << "MultiSiren is not installed" << std::endl;
-    }
     
     //Menu VSL
     Log::Level(LOG_LEVEL::LOG_BOTH) << "Loading MenuVSL..." << std::endl;
@@ -397,6 +404,17 @@ extern "C" void OnModLoad()
     modPolicia = (IModPolicia*)GetInterface("ModPolicia");
     if (modPolicia) Log::Level(LOG_LEVEL::LOG_BOTH) << "ModPolicia loaded" << std::endl;
     else Log::Level(LOG_LEVEL::LOG_BOTH) << "ModPolicia was not loaded" << std::endl;
+
+    //Multi Siren
+    Log::Level(LOG_LEVEL::LOG_BOTH) << "Loading MultiSiren..." << std::endl;
+    multiSiren = (IMultiSiren*)GetInterface("MultiSiren");
+    if (multiSiren) Log::Level(LOG_LEVEL::LOG_BOTH) << "MultiSiren loaded" << std::endl;
+    else Log::Level(LOG_LEVEL::LOG_BOTH) << "MultiSiren was not loaded" << std::endl;
+
+    if(multiSiren)
+    {
+        Globals::m_UsingMultiSiren = true;
+    }
 
     //CLEO
     Log::Level(LOG_LEVEL::LOG_BOTH) << "Loading CLEO..." << std::endl;
@@ -452,6 +470,7 @@ extern "C" void OnModLoad()
 
         if (aml->HasModOfVersion("net.rusjj.gtasa.utils", "1.4.0"))
         {
+            /*
             sautils->AddOnRWInitListener([]() {
                 Log::Level(LOG_LEVEL::LOG_BOTH) << "RWInit" << std::endl;
 
@@ -464,6 +483,7 @@ extern "C" void OnModLoad()
 
                 Log::Level(LOG_LEVEL::LOG_BOTH) << "Texture: " << texture << std::endl;
             });
+            */
         }
         else {
             Log::Level(LOG_LEVEL::LOG_BOTH) << "SAUtils 1.4 or superior not found" << std::endl;

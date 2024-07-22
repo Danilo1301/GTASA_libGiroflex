@@ -68,6 +68,8 @@ void WindowRotate::CreatePointRotate(Window* parent, LightGroup* lightGroup, Poi
         point->rotateObject.axis = (eRotateObjectAxis)axis->GetCurrentOption().value;
     };
 
+    window->AddCheckbox("Rotate always", &point->rotateObject.rotateAlways);
+
     auto close = window->AddButton("> ~r~Close", CRGBA(0, 0, 0, 0));
     close->onClick = [window]() {
         window->SetToBeRemoved();

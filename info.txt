@@ -202,8 +202,13 @@ OBS: I also found a bug that detects a lightpanel button press before the panel 
 [X] ADD: option to disable lights to turn with others lights
 [X] ADD: select color by a list of pre-defined colors
 [X] ADD: speed and axis to point rotate window
+[X] ADD: select color of leds (color1,2,3)
+[X] ADD: option to rotate only when lights are on
 
 [X] FIX: reset entries
+
+[3.7.1]
+[X] ADD: direction to the lights (FRONT. BACK. BOTH)
 
 -----------------------
 NOTES:

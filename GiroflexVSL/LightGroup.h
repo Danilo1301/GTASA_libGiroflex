@@ -77,6 +77,8 @@ public:
 
 	std::map<std::string, bool> patterns;
 
+	eSirenDirection direction = eSirenDirection::BOTH;
+
     LightGroup();
     ~LightGroup();
 

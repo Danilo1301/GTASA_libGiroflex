@@ -216,6 +216,15 @@ void WindowLightGroups::CreateEditLightGroup(Window* parent, LightGroup* lightGr
         }
     };
 
+    auto lights_direction = window->AddOptions(110);
+    lights_direction->optionsValue = (int)lightGroup->direction;
+    lights_direction->AddOption(111, 0, 0);
+    lights_direction->AddOption(112, 0, 0);
+    lights_direction->AddOption(113, 0, 0);
+    lights_direction->onValueChange = [lights_direction, lightGroup]() {
+        lightGroup->direction = (eSirenDirection)lights_direction->optionsValue;
+    };
+
     window->AddFloatRange(77, &lightGroup->nearClip, -2.0f, 5.0f, 0.01f);
 
     auto coronaTexture = window->AddIntRange(55, &lightGroup->coronaTexture, 0, 9, 1);
