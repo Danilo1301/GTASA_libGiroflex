@@ -1,1 +1,1 @@
-C:\android-ndk-r26c
+C:\android-ndk

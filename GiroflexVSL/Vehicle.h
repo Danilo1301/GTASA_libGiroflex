@@ -45,4 +45,6 @@ public:
 
 	void SetGiroflexEnabled(bool enabled, bool forceOn = false);
 	void ResetObjectRotation(std::string object);
+
+	void RegisterTestCorona(int lightId, CVector position, CRGBA color, float radius);
 };

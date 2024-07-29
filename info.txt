@@ -210,6 +210,12 @@ OBS: I also found a bug that detects a lightpanel button press before the panel 
 [3.7.1]
 [X] ADD: direction to the lights (FRONT. BACK. BOTH)
 
+[3.7.2]
+[X] ADD: direction SIDES (to FRONT BACK BOTH)
+[X] FIX: rotate always not saving
+[X] FIX: shadows not showing when option is FRONt/BOTH/SIDES
+[X] FIX: shadows not in the right place (its not perfect tho)
+
 -----------------------
 NOTES:
 

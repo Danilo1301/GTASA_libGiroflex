@@ -26,7 +26,7 @@ extern RpClump* (*RpClumpForAllAtomics)(RpClump* clump, RpAtomicCallBack callbac
 extern RpGeometry* (*RpGeometryForAllMaterials)(RpGeometry* geometry, RpMaterialCallBack fpCallBack, void* pData);
 extern char* (*GetFrameNodeName)(RwFrame* frame);
 
-const char* Mod::m_Version = "3.7.1";
+const char* Mod::m_Version = "3.7.2";
 
 bool canTurnSirenOn = true;
 bool canTurnPanelOn = true;

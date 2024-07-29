@@ -221,6 +221,7 @@ void WindowLightGroups::CreateEditLightGroup(Window* parent, LightGroup* lightGr
     lights_direction->AddOption(111, 0, 0);
     lights_direction->AddOption(112, 0, 0);
     lights_direction->AddOption(113, 0, 0);
+    lights_direction->AddOption(114, 0, 0);
     lights_direction->onValueChange = [lights_direction, lightGroup]() {
         lightGroup->direction = (eSirenDirection)lights_direction->optionsValue;
     };

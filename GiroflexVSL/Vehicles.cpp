@@ -165,8 +165,8 @@ void Vehicles::RenderAfter(CVehicle* pVehicle)
 
 void Vehicles::AddCoronaToRender(RenderCorona corona)
 {
-    if (corona.color.a == 0) return;
-    if (corona.radius <= 0.0f) return;
+    //if (corona.color.a == 0) return;
+    //if (corona.radius <= 0.0f) return;
 
     m_CoronasToRender.push_back(corona);
 }

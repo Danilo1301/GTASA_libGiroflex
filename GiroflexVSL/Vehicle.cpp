@@ -26,6 +26,8 @@ static std::list<std::pair<unsigned int *, unsigned int>> resetEntries;
 
 int Vehicle::m_LightIdOffset = 1000;
 
+int LightIdOffset = 10000;
+
 Vehicle::Vehicle(int hVehicle, int modelId)
 {
     this->hVehicle = hVehicle;
@@ -269,6 +271,8 @@ void Vehicle::UpdateLightGroups(int dt)
                 y += std::cos(angle) * lightGroup->rotateDistance;
             }
 
+            auto coronaOffset = CVector(x, y, 0) + lightGroup->offset + point->customOffset;
+
             //color
             CRGBA color = lightGroup->color1;
             if((double)i < ((double)amountOfPoints)/(double)2)
@@ -309,25 +313,75 @@ void Vehicle::UpdateLightGroups(int dt)
 
             auto radius = lightGroup->radius;
 
-            auto positionY = lightGroup->offset.y + point->customOffset.y;
-            auto angle = Point::GetAngle(pVehicle, lightGroup->offset + point->customOffset);
+            //auto positionY = lightGroup->offset.y + point->customOffset.y;
             
-            auto radiusMult = point->GetRadiusMultiplier(angle, lightGroup->direction, positionY);
+            //---------------------------------------
+            // get angle and direction
+            // and I hate this, cuz its hard, or im just too stupid for this, idk
+
+            auto vehiclePos = pVehicle->m_matrix->pos;
+            CVector cameraPos = camera->m_matrix->pos;
+            float coronaOffsetX = coronaOffset.x;
+
+            auto vec1 = TransformFromObjectSpace(pVehicle, CVector(-coronaOffsetX, 0, 0));
+            vec1.z = vehiclePos.z;
+
+            auto vec2 = vehiclePos;
+
+            auto vec3 = cameraPos;
+            vec3.z = vehiclePos.z;
+
+            auto vec1_2d = CVector2D(vec1.x, vec1.y);
+            auto vec2_2d = CVector2D(vec2.x, vec2.y);
+            auto vec3_2d = CVector2D(vec3.x, vec3.y);
+
+            auto angle = calculateAngleVec2D(vec1_2d, vec2_2d, vec3_2d);
+            
+            //menuVSL->debug->m_Visible = true;
+            //menuVSL->debug->AddLine("angle: " + std::to_string(angle));
+            //menuVSL->debug->AddLine("x: " + std::to_string(coronaOffsetX));
+
+            eSirenDirection direction = lightGroup->direction;
+
+            float radiusMult = 1.0f;
+            bool isCoronaAtLeft = coronaOffsetX < 0;
+            bool isCoronaAtRight = !isCoronaAtLeft;
+
+            if(direction == eSirenDirection::SIDES)
+            {
+                bool isHidden = (angle < 270.0f && angle > 90.0f);
+
+                radiusMult = isHidden ? 0.0f : 1.0f;
+            }
+
+            if(direction == eSirenDirection::FRONT || direction == eSirenDirection::BACK)
+            {
+                auto newAngle = angle;
+                if(isCoronaAtRight) newAngle -= 180;
+                if (newAngle < 0) newAngle += 360.0f;
+
+                bool visibleBack = (newAngle >= 0 && newAngle < 180.0f);
+                bool visibleFront = !visibleBack;
+
+                if(direction == eSirenDirection::FRONT)
+                    radiusMult = visibleFront ? 1.0f : 0.0f;
+
+                if(direction == eSirenDirection::BACK)
+                    radiusMult = visibleBack ? 1.0f : 0.0f;
+            }
 
             radius = lightGroup->radius * radiusMult;
-        
-            //menuVSL->debug->AddLine("vehicle: " + std::to_string(hVehicle));
-            //menuVSL->debug->AddLine("angle: " + std::to_string(angle));
-            //menuVSL->debug->AddLine("rad mul: " + std::to_string(radiusMult));
-            //menuVSL->debug->AddLine("radius: " + std::to_string(radius));
-            
 
+            //---------------------------------------
+
+            if(color.a == 0) enabled = false;
+            
             RenderCorona corona;
             corona.car = hVehicle;
             corona.pVehicle = pVehicle;
             corona.id = lightId++;
             corona.color = color;
-            corona.offset = CVector(x, y, 0) + lightGroup->offset + point->customOffset;
+            corona.offset = coronaOffset;
             corona.radius = enabled ? radius : 0.0f;
             corona.renderShadow = enabled ? lightGroup->renderShadow : false;
             corona.renderPointLight = enabled ? lightGroup->renderPointLight : false;
@@ -337,14 +391,14 @@ void Vehicle::UpdateLightGroups(int dt)
 
             //shadow offset X
             //corona.shadowOffsetX = lightGroup->shadowPositionX;
-            auto dir = (corona.offset.x > 0) ? 1 : -1;
+            auto dir = (coronaOffset.x > 0) ? 1 : -1;
             float margin = 0.15f;
-            float sdistance = abs(corona.offset.x);
+            float sdistance = abs(coronaOffset.x);
 
-            corona.shadowOffsetX = corona.offset.x + (dir * lightGroup->shadowPositionX);
+            corona.shadowOffsetX = coronaOffset.x + (dir * lightGroup->shadowPositionX);
             if (sdistance > margin)
             {
-                corona.shadowOffsetX += (dir * lightGroup->shadowSize / 2);
+                //corona.shadowOffsetX += (dir * lightGroup->shadowSize / 2);
             }
 
             if(lightGroup->rotate) corona.shadowOffsetX = lightGroup->shadowPositionX;
@@ -390,65 +444,8 @@ void Vehicle::UpdateLightGroups(int dt)
 }
 
 void Vehicle::OnUpdateGameLogic()
-{
-    return;
-    
-    auto lightId = hVehicle + Vehicle::m_LightIdOffset + 100;
-
-    auto position = pVehicle->m_matrix->pos;
-
-    //menuVSL->debug->AddLine("Register at "+ CVectorToString(position));
-    //Log::Level(LOG_LEVEL::LOG_BOTH) << "Register corona at " << CVectorToString(position) << std::endl;
-
-    RegisterCorona(
-        lightId++,
-        NULL,
-        255,
-        0,
-        0,
-        255,
-        { position.x, position.y, position.z },
-        2.0f,
-        1000.0f,
-        0,
-        0,
-        true,
-        false,
-        0,
-        0.0f,
-        false,
-        0.0f,
-        0,
-        10000.0f,
-        false,
-        false
-    );
-
-    auto position2 = TransformFromObjectSpace(pVehicle, CVector(10, 0, 0));
-
-    RegisterCorona(
-        lightId++,
-        NULL,
-        0,
-        255,
-        0,
-        255,
-        { position2.x, position2.y, position2.z },
-        2.0f,
-        1000.0f,
-        0,
-        0,
-        true,
-        false,
-        0,
-        0.0f,
-        false,
-        0.0f,
-        0,
-        10000.0f,
-        false,
-        false
-    );
+{   
+   
 }
 
 void Vehicle::RenderBefore()
@@ -672,4 +669,31 @@ void Vehicle::ResetObjectRotation(std::string object)
 	
 	RwMatrixRotate(&frame->modelling, &axis, angle, rwCOMBINEREPLACE);
 	RwMatrixTranslate(&frame->modelling, &pos, rwCOMBINEREPLACE);
+}
+
+void Vehicle::RegisterTestCorona(int lightId, CVector position, CRGBA color, float radius)
+{
+    RegisterCorona(
+        lightId++,
+        NULL,
+        color.r,
+        color.g,
+        color.b,
+        255,
+        { position.x, position.y, position.z },
+        radius,
+        1000.0f,
+        0,
+        0,
+        true,
+        false,
+        0,
+        0.0f,
+        false,
+        0.0f,
+        0,
+        10000.0f,
+        false,
+        false
+    );
 }

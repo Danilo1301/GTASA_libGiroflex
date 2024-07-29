@@ -16,7 +16,7 @@
 // ---------------------------------------
 
 //MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, Mod::m_Version, Danilo1301) //whoops
-MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.7.1, Danilo1301)
+MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.7.2, Danilo1301)
 
 // ---------------------------------------
 
@@ -71,6 +71,7 @@ RwMatrix* (*RwMatrixTranslate)(RwMatrix* matrix, const RwV3d* translation, RwOpC
 RwReal (*RwV3dNormalize)(RwV3d* out, const RwV3d* in);
 void (*CMatrix_CopyToRwMatrix)(CMatrix*, RwMatrix *matrix);
 RwMatrix* (*RwMatrixCreate)(void);
+RwBool (*RwMatrixDestroy)(RwMatrix* mpMat);
 
 void (*CFont_PrintString)(float x, float y, unsigned short* text);
 void (*AsciiToGxtChar)(const char* txt, unsigned short* ret);
@@ -330,6 +331,7 @@ void LoadSymbols()
     SET_TO(RwV3dNormalize, aml->GetSym(hGTASA, "_Z14RwV3dNormalizeP5RwV3dPKS_"));
     SET_TO(CMatrix_CopyToRwMatrix, aml->GetSym(hGTASA, "_ZNK7CMatrix14CopyToRwMatrixEP11RwMatrixTag"));
     SET_TO(RwMatrixCreate, aml->GetSym(hGTASA, "_Z14RwMatrixCreatev"));
+    SET_TO(RwMatrixDestroy, aml->GetSym(hGTASA, "_Z15RwMatrixDestroyP11RwMatrixTag"));
 
     SET_TO(CFont_PrintString, aml->GetSym(hGTASA, "_ZN5CFont11PrintStringEffPt"));
     SET_TO(AsciiToGxtChar, aml->GetSym(hGTASA, "_Z14AsciiToGxtCharPKcPt"));

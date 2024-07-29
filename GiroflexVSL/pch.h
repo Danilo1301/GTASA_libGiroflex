@@ -25,6 +25,7 @@ extern RwMatrix* (*RwMatrixTranslate)(RwMatrix* matrix, const RwV3d* translation
 extern RwReal (*RwV3dNormalize)(RwV3d* out, const RwV3d* in);
 extern void (*CMatrix_CopyToRwMatrix)(CMatrix*, RwMatrix *matrix);
 extern RwMatrix* (*RwMatrixCreate)(void);
+extern RwBool (*RwMatrixDestroy)(RwMatrix* mpMat);
 
 /*
 static unsigned char ucharIntensity(unsigned char uc, float intensity) {
@@ -177,7 +178,30 @@ static CVector TransformFromObjectSpace(CEntity* entity, CVector pos)
 
 	auto finalPos = CVector(matrix->pos.x, matrix->pos.y, matrix->pos.z);
 
-	//RwMatrixDestroy(matrix);
+	RwMatrixDestroy(matrix);
 
 	return finalPos;
+}
+
+static float calculateAngleVec2D(const CVector2D& A, const CVector2D& B, const CVector2D& C) {
+    // Vetores AB e BC
+    CVector2D AB(B.x - A.x, B.y - A.y);
+    CVector2D BC(C.x - B.x, C.y - B.y);
+
+    // Ângulos em relação ao eixo x usando atan2
+    float angleAB = std::atan2(AB.y, AB.x);
+    float angleBC = std::atan2(BC.y, BC.x);
+
+    // Diferença entre os ângulos
+    float angle = angleBC - angleAB;
+
+    // Converte de radianos para graus, se necessário
+    angle = angle * 180.0f / M_PI;
+
+    // Garantir que o ângulo esteja no intervalo [0, 360)
+    if (angle < 0) {
+        angle += 360.0f;
+    }
+
+    return angle;
 }

@@ -11,7 +11,8 @@ extern IMenuVSL* menuVSL;
 enum class eSirenDirection {
 	FRONT,
 	BOTH,
-	BACK
+	BACK,
+	SIDES
 };
 
 class Point {
@@ -36,6 +37,7 @@ public:
 		rotateObjectValue["speed"] = rotateObject.speed;
 		rotateObjectValue["object"] = rotateObject.object;
 		rotateObjectValue["axis"] = (int)rotateObject.axis;
+		rotateObjectValue["rotateAlways"] = rotateObject.rotateAlways;
 		value["rotateObject"] = rotateObjectValue;
 		
 
@@ -55,6 +57,7 @@ public:
 			rotateObject.speed = ValidateValue(rotateObjectValue["speed"], rotateObject.speed).asInt();
 			rotateObject.object = ValidateValue(rotateObjectValue["object"], rotateObject.object).asString();
 			rotateObject.axis = (eRotateObjectAxis)ValidateValue(rotateObjectValue["axis"], (int)rotateObject.axis).asInt();
+			rotateObject.rotateAlways = ValidateValue(rotateObjectValue["rotateAlways"], rotateObject.rotateAlways).asBool();
 		}
 	}
 
@@ -73,36 +76,5 @@ public:
 			angle = 0.0001;
 		}
 		return angle;
-	}
-
-	static double GetRadiusMultiplierByAngle(double currentDir, double startFadeDir, double offsetFadeDir) {
-		double end = startFadeDir + offsetFadeDir;
-
-		if (offsetFadeDir < 0) {
-			if (currentDir < startFadeDir + offsetFadeDir) currentDir = startFadeDir + offsetFadeDir;
-			if (currentDir > startFadeDir) currentDir = startFadeDir;
-		}
-		else {
-			if (currentDir < startFadeDir) currentDir = startFadeDir;
-			if (currentDir > startFadeDir + offsetFadeDir) currentDir = startFadeDir + offsetFadeDir;
-		}
-
-		return abs((currentDir - end) / offsetFadeDir);
-	}
-
-	float GetRadiusMultiplier(double angle, eSirenDirection direction, float positionY) {
-		if (direction == eSirenDirection::BOTH) return 1.0f;
-
-		eSirenDirection atDirection = positionY > 0 ? eSirenDirection::FRONT : eSirenDirection::BACK;
-
-		double start_fadeout = 1.0f;
-		double fadeout_offset = 0.6f;
-
-		if (atDirection != direction) {
-			start_fadeout += fadeout_offset;
-			fadeout_offset *= -1;
-		}
-
-		return (float)GetRadiusMultiplierByAngle(angle, start_fadeout, fadeout_offset);
 	}
 };
