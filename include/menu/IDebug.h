@@ -5,8 +5,8 @@
 
 class IDebug {
 public:
-    std::vector<std::string> m_Lines;
-    bool m_Visible = false;
+    std::vector<std::string> lines;
+    bool visible = false;
 
     virtual void AddLine(std::string text) = 0;
     virtual void Clear() = 0;

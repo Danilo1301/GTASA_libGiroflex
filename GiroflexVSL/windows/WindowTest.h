@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../menu/Menu.h"
+#include "menu/IMenuVSL.h"
 
 class WindowTest {
 public:
-	static Window* m_Window;
+	static IWindow* m_Window;
 
 	static void Create();
 	static void Remove();

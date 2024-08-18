@@ -1,10 +1,12 @@
 #pragma once
 
+#include "pch.h"
+
 class Mod {
 public:
-    static const char* m_Version;
+    static void Init();
+    static void Update();
+    static void UpdateTestTouches();
 
-    static void Update(int dt);
-    static void ProcessMenuButtons(int dt);
-    static void ProcessTestMenuButtons(int dt);
+    static void Render();
 };

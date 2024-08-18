@@ -1,26 +1,31 @@
 #include "WindowTest.h"
 
-Window* WindowTest::m_Window = NULL;
+extern IMenuVSL* menuVSL;
+
+IWindow* WindowTest::m_Window = NULL;
 
 void WindowTest::Create()
 {
 	if (m_Window) return;
 
-    auto window = m_Window = Menu::AddWindow(6);
-    window->position = CVector2D(80, 200);
+    auto window = m_Window = menuVSL->AddWindow();
+    window->m_Title = "Test";
 
-    auto text_id = window->AddText(0);
-    text_id->text->num1 = 522;
+    auto test1 = window->AddButton("test 1", CRGBA(255, 255, 255));
+    test1->onClick = []()
+    {
+        Remove();
+    };
 
-    auto button_close = window->AddButton(10, CRGBA(170, 70, 70));
+    auto button_close = window->AddButton("~r~Close", CRGBA(255, 255, 255));
     button_close->onClick = []()
     {
-        WindowTest::Remove();
+        Remove();
     };
 }
 
 void WindowTest::Remove()
 {
-    m_Window->RemoveThisWindow();
+    m_Window->SetToBeRemoved();
     m_Window = NULL;
 }

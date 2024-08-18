@@ -9,7 +9,7 @@
 class IWindow {
 public:
     int m_Id = -1;
-    CVector2D m_Position = CVector2D(200, 200);
+    CVector2D m_Position = CVector2D(400, 200);
     std::vector<IItem*> m_Items;
     std::string m_Title = "Window";
     float m_Width = 500.0f;

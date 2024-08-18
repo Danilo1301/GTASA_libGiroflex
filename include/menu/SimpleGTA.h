@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 class CVector {
 public:
     float x = 0.0f;
@@ -13,13 +15,35 @@ public:
         this->z = z;
     }
 
-    CVector operator+(const CVector right)
-    {
-        CVector result(this->x, this->y, this->z);
-        result.x += right.x;
-        result.y += right.y;
-        result.z += right.z;
-        return result;
+    inline void operator=(const CVector& right){
+        x = right.x;
+        y = right.y;
+        z = right.z;
+    }
+
+    inline void operator+=(const CVector& right) {
+        x = right.x + x;
+        y = right.y + y;
+        z = right.z + z;
+    }
+
+    inline void operator-=(const CVector& right) {
+        x = x - right.x;
+        y = y - right.y;
+        z = z - right.z;
+    }
+
+    inline void operator*=(float multiplier) {
+        x = multiplier * x;
+        y = multiplier * y;
+        z = multiplier * z;
+    }
+
+    inline void operator/=(float divisor) {
+        float a = 1.0 / divisor;
+        x = a * x;
+        y = a * y;
+        z = a * z;
     }
 };
 
@@ -118,4 +142,56 @@ enum eFontStyle : unsigned char {
     FONT_SUBTITLES,
     FONT_MENU,
     FONT_PRICEDOWN
+};
+
+struct GTAVector3D
+{
+    float x, y, z;
+    float SqrMagnitude() { return x * x + y * y + z * z; }
+    inline GTAVector3D operator-(const GTAVector3D& v) { return { x - v.x, y - v.y, z - v.z }; }
+};
+
+struct GTAMatrix
+{
+    GTAVector3D  right;
+    unsigned int flags;
+    GTAVector3D  up;
+    unsigned int pad1;
+    GTAVector3D  at;
+    unsigned int pad2;
+    GTAVector3D  pos;
+    unsigned int pad3;
+
+    void* ptr;
+    bool bln;
+};
+
+struct tByteFlag
+{
+    uint8_t nId : 7;
+    bool    bEmpty : 1;
+};
+
+struct GTAEntity
+{
+    inline int AsInt() { return (int)this; }
+    inline int& IntAt(int off) { return *(int*)(AsInt() + off); }
+    inline uint32_t& UIntAt(int off) { return *(uint32_t*)(AsInt() + off); }
+    inline uint8_t& UInt8At(int off) { return *(uint8_t*)(AsInt() + off); }
+    inline GTAVector3D& GetPos()
+    {
+        GTAMatrix* matrix = *(GTAMatrix**)(AsInt() + 20);
+        return matrix ? matrix->pos : *(GTAVector3D*)(AsInt() + 4);
+    }
+};
+
+struct GTAVehicleSA : GTAEntity
+{
+    char structure[2604];
+};
+
+struct GTAPedSA : GTAEntity
+{
+    char structure[1996];
+    bool Player() { return UIntAt(1436) < 2; }
 };

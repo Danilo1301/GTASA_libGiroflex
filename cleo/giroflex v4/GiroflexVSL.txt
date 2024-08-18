@@ -1,0 +1,37 @@
+{$CLEO .csa}
+03A4: name_thread "GiroflexVSL"
+
+//----------------------------------------------------
+// Made by Danilo1301
+//----------------------------------------------------
+
+const
+    VAR_Index = 0@
+    VAR_State = 1@
+end    
+
+var
+    VAR_Index : Int = 0
+    VAR_State : Int = 0
+end
+
+//----------------------------------------------------
+
+:MAIN
+wait 0
+
+//touch
+for VAR_Index = 1 to 9
+    0DE0: VAR_State = get_touch_point_state VAR_Index mintime 0
+    
+    //0FEC: menu_vsl_add_debug_int "Touch ~1~" VAR_Index
+    //0FEC: menu_vsl_add_debug_int "State: ~1~" VAR_State
+end
+
+
+
+jump @MAIN
+
+//----------------------------------------------------
+
+004E: terminate_this_script
