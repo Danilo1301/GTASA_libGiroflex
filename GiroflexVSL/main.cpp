@@ -16,7 +16,7 @@
 // ---------------------------------------
 
 //MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, Mod::m_Version, Danilo1301) //whoops
-MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.7.2, Danilo1301)
+MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.7.3, Danilo1301)
 
 // ---------------------------------------
 
@@ -399,7 +399,10 @@ extern "C" void OnModLoad()
     Log::Level(LOG_LEVEL::LOG_BOTH) << "Loading MenuVSL..." << std::endl;
     menuVSL = (IMenuVSL*)GetInterface("MenuVSL");
     if (menuVSL) Log::Level(LOG_LEVEL::LOG_BOTH) << "MenuVSL loaded" << std::endl;
-    else Log::Level(LOG_LEVEL::LOG_BOTH) << "MenuVSL was not loaded" << std::endl;
+    else {
+        Log::Level(LOG_LEVEL::LOG_BOTH) << "MenuVSL was not loaded" << std::endl;
+        return;
+    }
 
     //Mod Policia
     Log::Level(LOG_LEVEL::LOG_BOTH) << "Loading ModPolicia..." << std::endl;
@@ -422,8 +425,10 @@ extern "C" void OnModLoad()
     Log::Level(LOG_LEVEL::LOG_BOTH) << "Loading CLEO..." << std::endl;
     cleo = (cleo_ifs_t*)GetInterface("CLEO");
     if (cleo) Log::Level(LOG_LEVEL::LOG_BOTH) << "CLEO loaded" << std::endl;
-    else Log::Level(LOG_LEVEL::LOG_BOTH) << "CLEO was not loaded" << std::endl;
-    
+    else {
+        Log::Level(LOG_LEVEL::LOG_BOTH) << "CLEO was not loaded" << std::endl;
+        return;
+    }
 
     //BASS
     //https://github.com/AndroidModLoader/GTASA_CLEO_AudioStreams

@@ -337,9 +337,12 @@ void Vehicle::UpdateLightGroups(int dt)
 
             auto angle = calculateAngleVec2D(vec1_2d, vec2_2d, vec3_2d);
             
-            //menuVSL->debug->m_Visible = true;
-            //menuVSL->debug->AddLine("angle: " + std::to_string(angle));
-            //menuVSL->debug->AddLine("x: " + std::to_string(coronaOffsetX));
+            if(hVehicle == Globals::hPlayerVehicle)
+            {
+                //menuVSL->debug->m_Visible = true;
+                //menuVSL->debug->AddLine("angle: " + std::to_string(angle));
+                //menuVSL->debug->AddLine("x: " + std::to_string(coronaOffsetX));
+            }
 
             eSirenDirection direction = lightGroup->direction;
 
@@ -349,7 +352,8 @@ void Vehicle::UpdateLightGroups(int dt)
 
             if(direction == eSirenDirection::SIDES)
             {
-                bool isHidden = (angle < 270.0f && angle > 90.0f);
+                //bool isHidden = (angle < 270.0f && angle > 90.0f);
+                bool isHidden = (angle < 280.0f && angle > 80.0f);
 
                 radiusMult = isHidden ? 0.0f : 1.0f;
             }
