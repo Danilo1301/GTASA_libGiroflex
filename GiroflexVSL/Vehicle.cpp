@@ -421,7 +421,7 @@ void Vehicle::UpdateLightGroups(int dt)
             corona.pointLightIntensity = lightGroup->pointLightIntensity;
 
             corona.nearClip = lightGroup->nearClip;
-            corona.useFlare = lightGroup->useFlare;
+            corona.useFlare = enabled ? lightGroup->useFlare : false;
             corona.flareIntensity = lightGroup->flareIntensity;
             corona.flareDistance = lightGroup->flareDistance;
             corona.flareTexture = lightGroup->flareTexture;
