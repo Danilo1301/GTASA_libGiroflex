@@ -38,6 +38,8 @@ public:
 	static float m_VolumeSirens;
 	static float m_VolumeRadio;
 
+	static CAudioStream* m_AudioSirenToggle;
+
 	static void Load();
 	static void LoadConfig();
 	static void LoadVehicles();
@@ -48,6 +50,8 @@ public:
     static bool ModelIdHasSirenGroup(int modelId);
     static int GetCurrentVehicleModelId();
     static SirenGroup* GetCurrentVehicleSoundGroup();
+
+    static void PlaySirenToggleSound();
 
 	//
 

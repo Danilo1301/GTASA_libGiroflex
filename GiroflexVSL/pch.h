@@ -75,7 +75,7 @@ static CRGBA ColorFromJSON(Json::Value json) {
 	color.r = json["r"].asInt();
 	color.g = json["g"].asInt();
 	color.b = json["b"].asInt();
-	color.a = json["a"].asInt();
+	color.a = json["a"].empty() ? 255 : json["a"].asInt();
 	return color;
 }
 

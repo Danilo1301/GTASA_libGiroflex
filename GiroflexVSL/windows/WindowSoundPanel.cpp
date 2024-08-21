@@ -486,6 +486,9 @@ void WindowSoundPanel::Update(int dt)
 				buttonToggleLights->activeColor = buttonActiveColor;
 				buttonToggleLights->onIsActiveChange = [vehicle](bool isActive) {
 					vehicle->SetGiroflexEnabled(!vehicle->prevLightsState);
+
+					SirenSystem::PlaySirenToggleSound();
+
 					//Menu::ShowPopup(1, vehicle->prevLightsState ? 1 : 0, 0, 1000.0f);
 				};
 			}

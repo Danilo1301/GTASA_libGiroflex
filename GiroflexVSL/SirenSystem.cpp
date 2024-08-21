@@ -15,6 +15,8 @@ bool SirenSystem::FixLoudSounds = true;
 float SirenSystem::m_VolumeSirens = 1.0f;
 float SirenSystem::m_VolumeRadio = 3.0f;
 
+CAudioStream* SirenSystem::m_AudioSirenToggle = NULL;
+
 extern IBASS* BASS;
 extern CCamera* camera;
 
@@ -226,6 +228,14 @@ SirenGroup* SirenSystem::GetCurrentVehicleSoundGroup()
 	return GetSirenGroupForModelId(GetCurrentVehicleModelId());
 }
 
+void SirenSystem::PlaySirenToggleSound()
+{
+	if(m_AudioSirenToggle->GetState() != AudioStreamState::STREAM_STOPPED)
+		m_AudioSirenToggle->Stop();
+
+	m_AudioSirenToggle->Play();
+}
+
 //--------------------------------------
 
 SirenSystem::SirenSystem(int hVehicle)
@@ -236,6 +246,15 @@ SirenSystem::SirenSystem(int hVehicle)
 void SirenSystem::LoadAudios()
 {
 	Log::Level(LOG_LEVEL::LOG_BOTH) << "SirenSystem: LoadAudios" << std::endl;
+
+	// load siren toggle sounds
+
+	if(!m_AudioSirenToggle)
+	{
+		m_AudioSirenToggle = SoundSystem::LoadStreamFromAudiosFolder("/siren_toggle.wav", false);
+	}
+
+	//
 
 	auto vehicle = Vehicles::GetVehicleByHandle(hVehicle);
 	auto modelId = vehicle->modelId;

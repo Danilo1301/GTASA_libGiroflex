@@ -107,6 +107,8 @@ void Vehicle::Update(int dt)
                 //player vehicle
                 if(ModConfig::TurnOnLightsWithSiren)
                 {
+                    SirenSystem::PlaySirenToggleSound();
+                    
                     SetGiroflexEnabled(gameSirenState);
                 }
             } else {
@@ -291,6 +293,13 @@ void Vehicle::UpdateLightGroups(int dt)
             if(point->useCustomColor)
             {
                 color = point->customColor;
+            }
+
+            //pattern color
+            auto step = lightGroupData->GetCurrenetStep();
+            if(step->useCustomColor)
+            {
+                color = step->customColor;
             }
 
             //
@@ -568,6 +577,13 @@ void Vehicle::RenderBefore()
                     }
                 } else {
                     color = lightGroup->ledColor2Enabled;
+                }
+
+                //pattern color
+                auto step = lightGroupData->GetCurrenetStep();
+                if(step->useCustomLedColor)
+                {
+                    color = step->customLedColor;
                 }
                
                 //

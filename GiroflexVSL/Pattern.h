@@ -2,11 +2,19 @@
 
 #include "pch.h"
 
+#include "Log.h"
+
 #include <vector>
 
 struct PatternStep {
 	std::vector<int> data;
 	int duration = 0;
+
+	bool useCustomColor = false;
+	CRGBA customColor = CRGBA(255, 0, 0);
+
+	bool useCustomLedColor = false;
+	CRGBA customLedColor = CRGBA(255, 0, 0);
 };
 
 class Pattern {
@@ -62,6 +70,12 @@ public:
 				stepValue["data"].append(d);
 			}
 
+			stepValue["useCustomColor"] = step->useCustomColor;
+			stepValue["customColor"] = ColorToJSON(step->customColor);
+
+			stepValue["useCustomLedColor"] = step->useCustomLedColor;
+			stepValue["customLedColor"] = ColorToJSON(step->customLedColor);
+
 			value["steps"].append( stepValue );
 		}
 
@@ -72,19 +86,25 @@ public:
 	{
 		for (int step_i = 0; step_i < (int)value["steps"].size(); step_i++)
 		{
-			Json::Value step = value["steps"][step_i];
+			Json::Value stepValue = value["steps"][step_i];
 
-			int duration = step["duration"].asInt();
+			int duration = stepValue["duration"].asInt();
 
 			if (duration <= 0) continue;
 			
 			std::vector<int> data;
-			for (int val_i = 0; val_i < (int)step["data"].size(); val_i++)
+			for (int val_i = 0; val_i < (int)stepValue["data"].size(); val_i++)
 			{
-				data.push_back(step["data"][val_i].asInt());
+				data.push_back(stepValue["data"][val_i].asInt());
 			}
 
-			AddStep(data, duration);
+			auto step = AddStep(data, duration);
+
+			step->useCustomColor = ValidateValue(stepValue["useCustomColor"], step->useCustomColor).asBool();
+			step->customColor = ValidateColor(stepValue["customColor"], step->customColor);
+
+			step->useCustomLedColor = ValidateValue(stepValue["useCustomLedColor"], step->useCustomLedColor).asBool();
+			step->customLedColor = ValidateColor(stepValue["customLedColor"], step->customColor);
 		}
 	}
 };

@@ -16,7 +16,7 @@
 // ---------------------------------------
 
 //MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, Mod::m_Version, Danilo1301) //whoops
-MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.7.3, Danilo1301)
+MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.8.0, Danilo1301)
 
 // ---------------------------------------
 
@@ -548,7 +548,11 @@ extern "C" void OnModLoad()
 
     ModConfig::ProcessVersionChanges_PreConfigLoad();
 
+    Log::Level(LOG_LEVEL::LOG_BOTH) << "Mod Load" << std::endl;
+
     ModConfig::Load();
+
+    Log::Level(LOG_LEVEL::LOG_BOTH) << "Mod End Load" << std::endl;
 
     if (Patterns::m_Patterns.size() == 0)
     {

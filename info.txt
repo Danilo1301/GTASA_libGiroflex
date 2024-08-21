@@ -219,9 +219,10 @@ OBS: I also found a bug that detects a lightpanel button press before the panel 
 [3.7.3]
 [X] CHANGE: change the way it loads the libs (and add a log message if they are not loaded)
 
-[3.7.4]
+[3.8.0]
 [X] FIX: flare is always enabled
-[ ] FIX: issue with two leds using same object
+[X] ADD: support to multi color on patterns
+[X] ADD: sounds to the buttons (turn lights only, not turn sounds yet)
 
 -----------------------
 NOTES:
