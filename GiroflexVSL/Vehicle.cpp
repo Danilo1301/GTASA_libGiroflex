@@ -289,12 +289,6 @@ void Vehicle::UpdateLightGroups(int dt)
                 color = lightGroup->color2;
             }
 
-            //custom color
-            if(point->useCustomColor)
-            {
-                color = point->customColor;
-            }
-
             //pattern color
             auto step = lightGroupData->GetCurrenetStep();
             if(step->useCustomColor)
@@ -302,6 +296,12 @@ void Vehicle::UpdateLightGroups(int dt)
                 color = step->customColor;
             }
 
+            //custom color
+            if(point->useCustomColor)
+            {
+                color = point->customColor;
+            }
+            
             //
             int index = i;
 
