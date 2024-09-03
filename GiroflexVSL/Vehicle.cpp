@@ -54,7 +54,7 @@ void Vehicle::Update()
     CREATE_FLASH_LIGHT(vehiclePosition.x, vehiclePosition.y, vehiclePosition.z, 0, 0, 255, 20.0f);
 
     //shadow
-    CREATE_PARTICLE(6, vehiclePosition.x, vehiclePosition.y, vehiclePosition.z, 0.0f, 10.0f, 255, 255, 255, 255);
+    CREATE_PARTICLE(3, vehiclePosition.x, vehiclePosition.y, vehiclePosition.z, 0.0f, 10.0f, 255, 255, 255, 255);
 }
 
 void Vehicle::RenderCoronas()
@@ -92,7 +92,6 @@ void Vehicle::RenderCoronas()
         {
             Vehicle::RegisterTestCorona(lightId++, pVehicle, offset, CRGBA(0, 0, 255));
         }
-        
     }
 }
 

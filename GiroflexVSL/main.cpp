@@ -54,7 +54,7 @@ extern "C" void OnModPreLoad()
 
     CreateFolder(logPath);
 
-    Log::Open(logPath, "giroflexVSL");
+    Log::Open(logPath, "giroflexVSL", true);
 
     Log::Level(eLogLevel::LOG_BOTH) << "Preload()" << std::endl;
     Log::Level(eLogLevel::LOG_BOTH) << "AML headers: 1.0.3.1" << std::endl;

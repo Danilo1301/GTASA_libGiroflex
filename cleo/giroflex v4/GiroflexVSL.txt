@@ -3,6 +3,7 @@
 
 //----------------------------------------------------
 // Made by Danilo1301
+// v4
 //----------------------------------------------------
 
 const
@@ -15,20 +16,53 @@ var
     VAR_State : Int = 0
 end
 
+$DEBUG = 0 // 1 = enabled
+
 //----------------------------------------------------
 
 :MAIN
 wait 0
 
-//touch
-for VAR_Index = 1 to 9
-    0DE0: VAR_State = get_touch_point_state VAR_Index mintime 0
-    
-    //0FEC: menu_vsl_add_debug_int "Touch ~1~" VAR_Index
-    //0FEC: menu_vsl_add_debug_int "State: ~1~" VAR_State
+// set all touches state, so .so mods can detect them
+// i wish i could just use a for loop
+
+0DE0: VAR_State = get_touch_point_state 1 mintime 0
+0FF0: set_global_int_variable "touch_state_1" value VAR_State
+
+0DE0: VAR_State = get_touch_point_state 2 mintime 0
+0FF0: set_global_int_variable "touch_state_2" value VAR_State
+
+0DE0: VAR_State = get_touch_point_state 3 mintime 0
+0FF0: set_global_int_variable "touch_state_3" value VAR_State
+
+0DE0: VAR_State = get_touch_point_state 4 mintime 0
+0FF0: set_global_int_variable "touch_state_4" value VAR_State
+
+0DE0: VAR_State = get_touch_point_state 5 mintime 0
+0FF0: set_global_int_variable "touch_state_5" value VAR_State
+
+0DE0: VAR_State = get_touch_point_state 6 mintime 0
+0FF0: set_global_int_variable "touch_state_6" value VAR_State
+
+0DE0: VAR_State = get_touch_point_state 7 mintime 0
+0FF0: set_global_int_variable "touch_state_7" value VAR_State
+
+0DE0: VAR_State = get_touch_point_state 8 mintime 0
+0FF0: set_global_int_variable "touch_state_8" value VAR_State
+
+0DE0: VAR_State = get_touch_point_state 9 mintime 0
+0FF0: set_global_int_variable "touch_state_9" value VAR_State
+
+// debug touches
+if $DEBUG == 1
+then
+    for VAR_Index = 1 to 9
+        0DE0: VAR_State = get_touch_point_state VAR_Index mintime 0
+        
+        0FEC: menu_vsl_add_debug_int "Touch ~1~" VAR_Index
+        0FEC: menu_vsl_add_debug_int "State: ~1~" VAR_State
+    end
 end
-
-
 
 jump @MAIN
 

@@ -1,0 +1,3 @@
+[X] Detectar touches
+[ ] Criar menu principal do 5 e 6
+[ ] Criar sitema de grupos de lightGroups

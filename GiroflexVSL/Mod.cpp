@@ -3,15 +3,16 @@
 #include "Vehicles.h"
 #include "CleoOpcodes.h"
 #include "Widgets.h"
+#include "Touches.h"
 
 #include "windows/WindowTest.h"
+#include "windows/WindowMain.h"
 
 #include "menu/IMenuVSL.h"
 extern IMenuVSL* menuVSL;
 
-extern bool (*CTouchInterface_IsTouchDown)(int param_1);
-
 static bool firstUpdated = false;
+bool canTurnSirenOn = true;
 
 void Mod::Init()
 {
@@ -25,33 +26,42 @@ void Mod::Update()
     Widgets::Update(menuVSL->deltaTime);
     Vehicles::Update();
 
-    UpdateTestTouches();
+    Touches::Update();
+
+    //Main menu and toggle lights
+    if (Touches::GetTouchIdState(6) && Touches::GetTouchIdState(5))
+    {
+        if (Touches::GetTouchIdPressTime(6) > 500)
+        {
+            //auto vehicle = Globals::GetPlayerVehicle();
+
+            if (canTurnSirenOn)
+            {
+                canTurnSirenOn = false;
+
+                //vehicle->SetGiroflexEnabled(!vehicle->prevLightsState);
+            }
+
+            if (Touches::GetTouchIdPressTime(6) > 1000)
+            {
+                if (!WindowMain::m_Window)
+                {
+                    //vehicle->SetGiroflexEnabled(true, true);
+
+                    WindowMain::Create();
+                }
+            }
+        }
+    }
+    else {
+        canTurnSirenOn = true;
+    }
 
     if(!WindowTest::m_Window)
     {
         if(Widgets::IsWidgetJustPressed(13))
         {
             WindowTest::Create();
-        }
-    }
-}
-
-void Mod::UpdateTestTouches()
-{
-    //menuVSL->debug->AddLine("checking touches:");
-
-    for(int i = 1; i <= 9; i++)
-    {
-        auto state = GET_TOUCH_POINT_STATE(i, 0);
-        if(state != 0)
-        {
-            menuVSL->debug->AddLine("touch " + std::to_string(i) + " state: " + std::to_string(state));
-        }
-
-        auto isDown = CTouchInterface_IsTouchDown(i);
-        if(isDown)
-        {
-            menuVSL->debug->AddLine("touch " + std::to_string(i) + " is DOWN");
         }
     }
 }
