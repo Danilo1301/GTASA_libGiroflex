@@ -70,6 +70,7 @@ public:
 	int lightbarLEDStartIndex = 1;
 	bool useNormalLEDs = false;
 	int normalLEDStartIndex = 1;
+	
 	CRGBA ledColor1Enabled = CRGBA(255, 255, 255);
 	CRGBA ledColor2Enabled = CRGBA(255, 255, 255);
 	CRGBA ledColor3Enabled = CRGBA(255, 255, 255);

@@ -366,6 +366,7 @@ extern "C" void OnModPreLoad()
 
     Log::Level(LOG_LEVEL::LOG_BOTH) << "Preload()" << std::endl;
     Log::Level(LOG_LEVEL::LOG_BOTH) << "AML headers: 1.1" << std::endl;
+    Log::Level(LOG_LEVEL::LOG_BOTH) << "Test #1" << std::endl;
 
     logger->SetTag("GiroflexVSL");
 

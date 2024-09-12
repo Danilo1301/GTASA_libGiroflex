@@ -162,6 +162,7 @@ Json::Value LightGroup::ToJSON()
     value["rotateInverse"] = rotateInverse;
 
     value["useLightbarLEDs"] = useLightbarLEDs;
+    value["lightbarLEDStartIndex"] = lightbarLEDStartIndex;
     value["useNormalLEDs"] = useNormalLEDs;
     value["normalLEDStartIndex"] = normalLEDStartIndex;
 
@@ -249,6 +250,8 @@ void LightGroup::FromJSON(Json::Value value)
     rotateInverse = ValidateValue(value["rotateInverse"], rotateInverse).asBool();
 
     useLightbarLEDs = ValidateValue(value["useLightbarLEDs"], useLightbarLEDs).asBool();
+    lightbarLEDStartIndex = ValidateValue(value["lightbarLEDStartIndex"], lightbarLEDStartIndex).asInt();
+
     useNormalLEDs = ValidateValue(value["useNormalLEDs"], useNormalLEDs).asBool();
     normalLEDStartIndex = ValidateValue(value["normalLEDStartIndex"], normalLEDStartIndex).asInt();
 
