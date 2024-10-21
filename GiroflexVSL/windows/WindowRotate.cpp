@@ -47,7 +47,7 @@ void WindowRotate::CreatePointRotate(Window* parent, LightGroup* lightGroup, Poi
     }
 
     auto selectObject = window->AddButton("Select object", CRGBA(255, 255, 255));
-    selectObject->m_StringAtRight = &point->rotateObject.object;
+    selectObject->m_StringPtrAtRight = &point->rotateObject.object;
     selectObject->onClick = [window, point] () {
         auto newWindow = menuVSL->AddWindowOptionsString("Select object", window, &point->rotateObject.object, &selectObjectStrVec);
     };

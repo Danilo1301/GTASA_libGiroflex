@@ -20,14 +20,14 @@
 
 <h1>Instalação</h1>
 
-* Libs necessárias:
+## Libs necessárias (baixar separado)
+  * Menu VSL (https://github.com/Danilo1301/GTASA_libMenuVSL)
+
+## Libs necessárias (vêm junto do .zip)
   * AML (https://github.com/RusJJ/AndroidModLoader)
   * SAUtils (https://github.com/AndroidModLoader/SAUtils)
   * CLEO Mod (https://github.com/AndroidModLoader/GTA_CLEOMod)
   * BASS Mod (https://github.com/AndroidModLoader/BASSMod)
-
-( as libs já vem dentro do .zip, em 'libs necessárias', basta apenas jogar os arquivos .so dentro da sua pasta /mods )<br>
-( exemplo: para /Android/data/ro.samp_mobile.game/mods )<br>
 
 1. Baixe o **GiroflexVSL-0.0.0__pt-br.zip** em [Releases](https://github.com/Danilo1301/GTASA_libGiroflexVSL/releases)
 2. Abra a pasta "1. libs necessárias" e copie a pasta "mods" para dentro da sua pasta "mods" (em com.rockstargames.gtasa/mods)
