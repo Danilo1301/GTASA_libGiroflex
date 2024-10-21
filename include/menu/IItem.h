@@ -40,7 +40,10 @@ public:
 	bool m_DrawTextAtCenter = false;
 	float m_OptionsTextWidth = 100.0f;
 	bool m_Visible = true;
-	std::string* m_StringAtRight = NULL;
+
+	std::string* m_StringPtrAtRight = NULL;
+	std::string m_StringAtRight = "";
+	CVector2D m_StringAtRightOffset = CVector2D(0.0f, 0.0f);
 	
 	std::function<void()> onClick;
 	std::function<void()> onValueChange;
