@@ -13,5 +13,7 @@ struct LightGroupRotateObject {
 	bool rotateAlways = false;
 	float speed = 5.0f;
 	eRotateObjectAxis axis = eRotateObjectAxis::Z;
+	bool flipForward = false;
 	std::string object = "[none]";
+	RwMatrix* matrix = NULL;
 };

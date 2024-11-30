@@ -34,7 +34,7 @@ public:
     eItemType m_Type = eItemType::ITEM_NONE;
     std::string m_Text = "Item";
 	CRGBA m_TextColor = CRGBA(255, 255, 255);
-	CRGBA m_BackgroundColor = CRGBA(50, 50, 50);
+	CRGBA m_BackgroundColor = CRGBA(0, 0, 0, 0);
 	bool m_FitInWindow = true;
 	bool m_CanBeSelected = true;
 	bool m_DrawTextAtCenter = false;

@@ -224,6 +224,9 @@ OBS: I also found a bug that detects a lightpanel button press before the panel 
 [X] ADD: support to multi color on patterns
 [X] ADD: sounds to the buttons (turn lights only, not turn sounds yet)
 
+[3.9.0]
+[X] ADD: lights rotate with object
+
 -----------------------
 NOTES:
 

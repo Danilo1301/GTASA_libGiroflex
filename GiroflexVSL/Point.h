@@ -38,6 +38,7 @@ public:
 		rotateObjectValue["object"] = rotateObject.object;
 		rotateObjectValue["axis"] = (int)rotateObject.axis;
 		rotateObjectValue["rotateAlways"] = rotateObject.rotateAlways;
+		rotateObjectValue["flipForward"] = rotateObject.flipForward;
 		value["rotateObject"] = rotateObjectValue;
 		
 
@@ -58,6 +59,7 @@ public:
 			rotateObject.object = ValidateValue(rotateObjectValue["object"], rotateObject.object).asString();
 			rotateObject.axis = (eRotateObjectAxis)ValidateValue(rotateObjectValue["axis"], (int)rotateObject.axis).asInt();
 			rotateObject.rotateAlways = ValidateValue(rotateObjectValue["rotateAlways"], rotateObject.rotateAlways).asBool();
+			rotateObject.flipForward = ValidateValue(rotateObjectValue["flipForward"], rotateObject.flipForward).asBool();
 		}
 	}
 

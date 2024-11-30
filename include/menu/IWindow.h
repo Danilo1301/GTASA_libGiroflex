@@ -20,7 +20,7 @@ public:
     int m_MaxItemsPerPage = 7;
     bool m_ShowBackButton = false;
     IWindow* m_Parent = NULL;
-    std::function<void()> m_OnCloseWindow;
+    std::function<void()> onCloseWindow;
 
     /*1.0.0*/
     virtual void SetPosition(CVector2D position) = 0;

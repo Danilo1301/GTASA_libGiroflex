@@ -46,7 +46,7 @@ void WindowRotate::CreatePointRotate(Window* parent, LightGroup* lightGroup, Poi
         selectObjectStrVec.push_back(name);
     }
 
-    auto selectObject = window->AddButton("Select object", CRGBA(255, 255, 255));
+    auto selectObject = window->AddButton("Select object");
     selectObject->m_StringPtrAtRight = &point->rotateObject.object;
     selectObject->onClick = [window, point] () {
         auto newWindow = menuVSL->AddWindowOptionsString("Select object", window, &point->rotateObject.object, &selectObjectStrVec);
@@ -70,7 +70,9 @@ void WindowRotate::CreatePointRotate(Window* parent, LightGroup* lightGroup, Poi
 
     window->AddCheckbox("Rotate always", &point->rotateObject.rotateAlways);
 
-    auto close = window->AddButton("> ~r~Close", CRGBA(0, 0, 0, 0));
+    window->AddCheckbox("Flip forward dir", &point->rotateObject.flipForward);
+
+    auto close = window->AddButton("> ~r~Close");
     close->onClick = [window]() {
         window->SetToBeRemoved();
         Menu::m_Visible = true;

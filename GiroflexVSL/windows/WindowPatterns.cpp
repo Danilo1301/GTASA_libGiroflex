@@ -36,12 +36,12 @@ void WindowPatterns::Create(Window* parent, LightGroup* lightGroup)
 
     UpdateOptions(lightGroup);
     
-    auto selectPatterns = window->AddButton("> Select patterns", CRGBA(0, 0, 0, 0));
+    auto selectPatterns = window->AddButton("> Select patterns");
     selectPatterns->onClick = [window, lightGroup]() {
         
         auto newWindow = menuVSL->AddWindowMultiOptionsString("Select patterns", window, &selectedOptions, &allOptions);
-        newWindow->m_OnCloseWindow = [lightGroup]() {
-            menuVSL->debug->AddLine("Closed, now update");
+        newWindow->onCloseWindow = [lightGroup]() {
+            menuVSL->ShowMessage("Updating lightgroup...", 1000);
 
             lightGroup->Update();
 
@@ -72,7 +72,7 @@ void WindowPatterns::Create(Window* parent, LightGroup* lightGroup)
         itemInfo->m_Text = "Selected patterns: " + std::to_string(selectedOptions.size()) + " / " + std::to_string(allOptions.size());
     };
 
-    auto close = window->AddButton("> ~r~Close", CRGBA(0, 0, 0, 0));
+    auto close = window->AddButton("> ~r~Close");
     close->onClick = [window]() {
         window->SetToBeRemoved();
         Menu::m_Visible = true;

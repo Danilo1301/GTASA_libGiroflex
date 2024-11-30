@@ -28,6 +28,23 @@ int Vehicle::m_LightIdOffset = 1000;
 
 int LightIdOffset = 10000;
 
+float GetIntensityFromAngle(float angle)
+{
+    if (angle > M_PI/2)
+    {
+        // A função é mapeada de modo que o valor de 0 a Math.PI se transforme de 0 a 1
+        // Ajuste o valor de "angle" para que ele esteja entre 0 e Math.PI.
+        float mappedValue = (angle - (float)(M_PI / 2)) / (float)(M_PI / 2);
+
+        // Converta o valor para o intervalo [0, 1], onde Math.PI / 2 é 0 e Math.PI é 1.
+        return std::clamp(mappedValue, 0.0f, 1.0f);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 Vehicle::Vehicle(int hVehicle, int modelId)
 {
     this->hVehicle = hVehicle;
@@ -387,6 +404,47 @@ void Vehicle::UpdateLightGroups(int dt)
 
             //---------------------------------------
 
+            if(point->rotateObject.rotate && point->rotateObject.matrix != NULL)
+            {
+                //int lightId = 10000;
+
+                //RegisterTestCorona2(lightId++, coronaOffset, CRGBA(0, 255, 0), 2.0f);
+
+
+                auto objectMatPos = point->rotateObject.matrix->pos;
+                auto objectPosition = CVector(objectMatPos.x, objectMatPos.y, objectMatPos.z);
+                auto objectWorldPosition = TransformFromObjectSpace(pVehicle, objectPosition);
+
+                auto flipForward = point->rotateObject.flipForward;
+
+                auto forwardPosition = objectWorldPosition + TransformFromMatrixSpace(point->rotateObject.matrix, CVector(0, flipForward ? -1 : 1, 0));
+                auto cameraPosition = camera->m_matrix->pos;
+
+                auto vec1 = forwardPosition;
+
+                auto vec2 = objectWorldPosition;
+
+                auto vec3 = cameraPosition;
+
+                // pos Z is ignored :)
+                auto angle = GetAngleBetweenVectors(vec1, vec2, vec3);
+
+                float intensity = GetIntensityFromAngle(angle);
+
+                if(hVehicle == Globals::hPlayerVehicle)
+                {
+                    // menuVSL->debug->visible = true;
+                    // menuVSL->debug->AddLine("angle: " + std::to_string(angle));
+                    // menuVSL->debug->AddLine("forward: " + CVectorToString(vec1));
+                    // menuVSL->debug->AddLine("objectPos: " + CVectorToString(objectWorldPosition));
+                    // menuVSL->debug->AddLine("cam: " + CVectorToString(vec3));
+                }
+
+                radius *= intensity;
+            }
+
+            //---------------------------------------
+
             if(color.a == 0) enabled = false;
             
             RenderCorona corona;
@@ -531,6 +589,34 @@ void Vehicle::RenderBefore()
                 RwReal angle = point->rotateObject.speed;
 
                 RwMatrixRotate(&frameAtomic->modelling, &axis, angle, rwCOMBINEPRECONCAT);
+
+                //by chatGPT
+
+                float yaw, pitch, roll;
+
+                // Verifica se a matriz está alinhada para evitar valores indefinidos
+                if (frameAtomic->modelling.at.y > 0.998f) { // Singularidade no polo norte
+                    yaw = atan2f(frameAtomic->modelling.right.z, frameAtomic->modelling.right.x);
+                    pitch = M_PI_2;
+                    roll = 0.0f;
+                } else if (frameAtomic->modelling.at.y < -0.998f) { // Singularidade no polo sul
+                    yaw = atan2f(frameAtomic->modelling.right.z, frameAtomic->modelling.right.x);
+                    pitch = -M_PI_2;
+                    roll = 0.0f;
+                } else {
+                    yaw = atan2f(-frameAtomic->modelling.at.x, frameAtomic->modelling.at.z);
+                    pitch = asinf(frameAtomic->modelling.at.y);
+                    roll = atan2f(-frameAtomic->modelling.up.y, frameAtomic->modelling.right.y);
+                }
+
+                point->rotateObject.matrix = &frameAtomic->modelling;
+
+                if(hVehicle == Globals::hPlayerVehicle)
+                {
+                    // menuVSL->debug->visible = true;
+                    // menuVSL->debug->AddLine("roll: " + std::to_string(roll));
+                    // menuVSL->debug->AddLine("matrix: " + std::to_string((int)point->rotateObject.matrix));
+                }
             }
         }
 

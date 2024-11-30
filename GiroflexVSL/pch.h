@@ -143,6 +143,62 @@ static double GetAngleBetweenVectors(CVector v1, CVector v2, CVector v3)
 	return acos((pow(v12, 2) + pow(v13, 2) - pow(v23, 2)) / (2 * (v12 * v13)));
 }
 
+static RwMatrix* CloneRwMatrix(const RwMatrix* originalMatrix)
+{
+    // Cria uma nova matriz
+    RwMatrix* clonedMatrix = RwMatrixCreate();
+    if (!clonedMatrix)
+        return NULL; // Retorna NULL em caso de falha
+
+    // Copia os vetores da matriz original para a nova matriz
+    clonedMatrix->right = originalMatrix->right;
+    clonedMatrix->up = originalMatrix->up;
+    clonedMatrix->at = originalMatrix->at;
+    clonedMatrix->pos = originalMatrix->pos;
+
+    // Define o status como idêntico ao da original
+    clonedMatrix->flags = originalMatrix->flags;
+
+    return clonedMatrix;
+}
+
+static CVector TransformFromMatrixSpace(RwMatrix* originalMatrix, CVector pos)
+{
+	RwMatrix* matrix = CloneRwMatrix(originalMatrix);
+
+	RwV3d forward = { matrix->up.x, matrix->up.y, matrix->up.z };
+	RwV3d right = { matrix->right.x, matrix->right.y, matrix->right.z };
+	RwV3d up = { matrix->at.x, matrix->at.y, matrix->at.z };
+
+	RwV3dNormalize(&forward, &forward);
+	RwV3dNormalize(&right, &right);
+	RwV3dNormalize(&up, &up);
+
+	RwV3d translate;
+	translate.x = forward.x * pos.y;
+	translate.y = forward.y * pos.y;
+	translate.z = forward.z * pos.y;
+
+	translate.x += right.x * pos.x;
+	translate.y += right.y * pos.x;
+	translate.z += right.z * pos.x;
+
+	translate.x += up.x * pos.z;
+	translate.y += up.y * pos.z;
+	translate.z += up.z * pos.z;
+	
+	//RwIm3DTransform
+	
+	// Translate the matrix
+	RwMatrixTranslate(matrix, &translate, rwCOMBINEPOSTCONCAT);
+
+	auto finalPos = CVector(matrix->pos.x, matrix->pos.y, matrix->pos.z);
+
+	RwMatrixDestroy(matrix);
+
+	return finalPos;
+}
+
 static CVector TransformFromObjectSpace(CEntity* entity, CVector pos)
 {
 	RwMatrix* matrix = RwMatrixCreate();
