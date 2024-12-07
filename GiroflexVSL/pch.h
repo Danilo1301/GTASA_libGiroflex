@@ -143,6 +143,23 @@ static double GetAngleBetweenVectors(CVector v1, CVector v2, CVector v3)
 	return acos((pow(v12, 2) + pow(v13, 2) - pow(v23, 2)) / (2 * (v12 * v13)));
 }
 
+static CVector RotateVectorAroundZ(CVector vector, float angleRadians) {
+
+    //float angleRadians = angleDegrees * (3.14159265f / 180.0f);
+
+    // Calcula o cosseno e o seno do ângulo
+    float cosTheta = cosf(angleRadians);
+    float sinTheta = sinf(angleRadians);
+
+    // Aplica a rotação no plano XY
+    CVector rotatedVector = CVector(0, 0, 0);
+    rotatedVector.x = vector.x * cosTheta - vector.y * sinTheta;
+    rotatedVector.y = vector.x * sinTheta + vector.y * cosTheta;
+    rotatedVector.z = vector.z; // A componente Z não muda
+
+    return rotatedVector;
+}
+
 static RwMatrix* CloneRwMatrix(const RwMatrix* originalMatrix)
 {
     // Cria uma nova matriz
@@ -160,6 +177,27 @@ static RwMatrix* CloneRwMatrix(const RwMatrix* originalMatrix)
     clonedMatrix->flags = originalMatrix->flags;
 
     return clonedMatrix;
+}
+
+static CVector CMatrixGetForward(CMatrix* cmatrix)
+{
+	RwMatrix* matrix = RwMatrixCreate();
+	
+	//entity->m_matrix->CopyToRwMatrix(matrix);
+	CMatrix_CopyToRwMatrix(cmatrix, matrix);
+
+	RwV3d forward = { matrix->up.x, matrix->up.y, matrix->up.z };
+
+	RwMatrixDestroy(matrix);
+
+	return CVector(forward.x, forward.y, forward.z);
+}
+
+static CVector MatrixGetForward(RwMatrix* matrix)
+{
+	RwV3d forward = { matrix->up.x, matrix->up.y, matrix->up.z };
+
+	return CVector(forward.x, forward.y, forward.z);
 }
 
 static CVector TransformFromMatrixSpace(RwMatrix* originalMatrix, CVector pos)

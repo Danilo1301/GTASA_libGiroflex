@@ -72,6 +72,7 @@ RwReal (*RwV3dNormalize)(RwV3d* out, const RwV3d* in);
 void (*CMatrix_CopyToRwMatrix)(CMatrix*, RwMatrix *matrix);
 RwMatrix* (*RwMatrixCreate)(void);
 RwBool (*RwMatrixDestroy)(RwMatrix* mpMat);
+RwMatrix* (*RwMatrixMultiply)(RwMatrix* matrixOut, const RwMatrix* MatrixIn1, const RwMatrix* matrixIn2);
 
 void (*CFont_PrintString)(float x, float y, unsigned short* text);
 void (*AsciiToGxtChar)(const char* txt, unsigned short* ret);
@@ -332,7 +333,8 @@ void LoadSymbols()
     SET_TO(CMatrix_CopyToRwMatrix, aml->GetSym(hGTASA, "_ZNK7CMatrix14CopyToRwMatrixEP11RwMatrixTag"));
     SET_TO(RwMatrixCreate, aml->GetSym(hGTASA, "_Z14RwMatrixCreatev"));
     SET_TO(RwMatrixDestroy, aml->GetSym(hGTASA, "_Z15RwMatrixDestroyP11RwMatrixTag"));
-
+    SET_TO(RwMatrixMultiply, aml->GetSym(hGTASA, "_Z16RwMatrixMultiplyP11RwMatrixTagPKS_S2_"));
+    
     SET_TO(CFont_PrintString, aml->GetSym(hGTASA, "_ZN5CFont11PrintStringEffPt"));
     SET_TO(AsciiToGxtChar, aml->GetSym(hGTASA, "_Z14AsciiToGxtCharPKcPt"));
     SET_TO(RenderFontBuffer, aml->GetSym(hGTASA, "_ZN5CFont16RenderFontBufferEv"));

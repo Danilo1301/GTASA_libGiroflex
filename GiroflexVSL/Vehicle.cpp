@@ -19,14 +19,18 @@ extern IMenuVSL* menuVSL;
 extern void* (*GetVehicleFromRef)(int);
 extern RwMatrix* (*RwMatrixRotate)(RwMatrix* matrix, const RwV3d* axis, RwReal angle, RwOpCombineType combineOp);
 extern RwMatrix* (*RwMatrixTranslate)(RwMatrix* matrix, const RwV3d* translation, RwOpCombineType combineOp);
+extern RwMatrix* (*RwMatrixMultiply)(RwMatrix* matrixOut, const RwMatrix* MatrixIn1, const RwMatrix* matrixIn2);
 
 extern void (*RegisterCorona)(unsigned int id, void* attachTo, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha, CVector const& posn, float radius, float farClip, int coronaType, int flaretype, bool enableReflection, bool checkObstacles, int _param_not_used, float angle, bool longDistance, float nearClip, unsigned char fadeState, float fadeSpeed, bool onlyFromBelow, bool reflectionDelay);
 
 static std::list<std::pair<unsigned int *, unsigned int>> resetEntries;
 
 int Vehicle::m_LightIdOffset = 1000;
+bool Vehicle::m_ShowRotatePointDirection = false;
 
 int LightIdOffset = 10000;
+
+const double TO_RADIANS = M_PI / 180.0;
 
 float GetIntensityFromAngle(float angle)
 {
@@ -410,30 +414,49 @@ void Vehicle::UpdateLightGroups(int dt)
 
                 //RegisterTestCorona2(lightId++, coronaOffset, CRGBA(0, 255, 0), 2.0f);
 
+                auto coronaWorldPosition = TransformFromObjectSpace(pVehicle, coronaOffset);
 
-                auto objectMatPos = point->rotateObject.matrix->pos;
-                auto objectPosition = CVector(objectMatPos.x, objectMatPos.y, objectMatPos.z);
-                auto objectWorldPosition = TransformFromObjectSpace(pVehicle, objectPosition);
+                auto carForward = CMatrixGetForward(pVehicle->m_matrix);
 
-                auto flipForward = point->rotateObject.flipForward;
+                //roll
 
-                auto forwardPosition = objectWorldPosition + TransformFromMatrixSpace(point->rotateObject.matrix, CVector(0, flipForward ? -1 : 1, 0));
+                auto roll = point->rotateObject.roll + point->rotateObject.directionFix;
+
+                //
+
+                auto newDir = RotateVectorAroundZ(carForward, roll);
+
+                auto coronaForwardedPosition = coronaWorldPosition + newDir;
+
+                // ------------------
+
                 auto cameraPosition = camera->m_matrix->pos;
 
-                auto vec1 = forwardPosition;
+                auto vec1 = coronaForwardedPosition;
+                vec1.z = coronaWorldPosition.z;
 
-                auto vec2 = objectWorldPosition;
+                auto vec2 = coronaWorldPosition;
 
                 auto vec3 = cameraPosition;
+                vec3.z = coronaWorldPosition.z;
 
                 // pos Z is ignored :)
                 auto angle = GetAngleBetweenVectors(vec1, vec2, vec3);
 
                 float intensity = GetIntensityFromAngle(angle);
 
-                if(hVehicle == Globals::hPlayerVehicle)
+                //if vehicle is the player's
                 {
-                    // menuVSL->debug->visible = true;
+                    //menuVSL->debug->visible = true;
+                    //menuVSL->debug->AddLine("roll: " + std::to_string(point->rotateObject.roll));
+
+                    //RegisterDebugCorona(lightId++, vec1, CRGBA(255, 0, 0));
+                    //RegisterDebugCorona(lightId++, vec2, CRGBA(0, 255, 0));
+                    //RegisterDebugCorona(lightId++, vec3, CRGBA(0, 0, 255));
+
+                    //menuVSL->debug->AddLine("forward: " + CVectorToString(newDir));
+
+
                     // menuVSL->debug->AddLine("angle: " + std::to_string(angle));
                     // menuVSL->debug->AddLine("forward: " + CVectorToString(vec1));
                     // menuVSL->debug->AddLine("objectPos: " + CVectorToString(objectWorldPosition));
@@ -514,9 +537,123 @@ void Vehicle::UpdateLightGroups(int dt)
     }
 }
 
+/*
+doest work
+*/
+void Vehicle::RegisterDebugCorona(int lightId, CVector worldPostion, CRGBA color)
+{
+    RenderCorona corona2;
+    corona2.car = 0;
+    corona2.pVehicle = NULL;
+    corona2.id = lightId;
+    corona2.color = color;
+    corona2.offset = worldPostion;
+    corona2.radius = 1.0f;
+    corona2.nearClip = 0.1f;
+    corona2.coronaTexture = 0;
+    Vehicles::AddCoronaToRender(corona2);
+}
+
 void Vehicle::OnUpdateGameLogic()
 {   
-   
+    auto lightId = hVehicle + 5000;
+
+    auto testpos = TransformFromObjectSpace(pVehicle, CVector(0, 0, 3));
+
+    //RegisterTestCorona(lightId++, testpos, CRGBA(0, 255, 0), 2.0f);
+
+    if (!ModelInfos::HasModelInfo(modelId)) return;
+
+    auto modelInfo = ModelInfos::GetModelInfo(modelId);
+
+    for (auto lightGroup : modelInfo->lightGroups)
+    {
+        LightGroupData* lightGroupData = LightGroupDatas::GetLightGroupData(lightGroup, hVehicle);
+
+        if (!lightGroupData)
+        {
+            continue;
+        }
+
+        for (int i = 0; i < (int)lightGroup->points.size(); i++)
+        {
+            auto point = lightGroup->points[i];
+
+            auto amountOfPoints = lightGroup->points.size();
+            auto distance = lightGroup->distance;
+            auto curve = lightGroup->curve;
+
+            //position
+            float x = (i * distance) - ((amountOfPoints - 1) * distance / 2);
+			float y = (float)arch_fn_parabola((float)i, curve, (float)(amountOfPoints - 1));
+
+            //rotate position
+            if(lightGroup->rotate)
+            {
+                auto angle = lightGroup->rotateAngle;
+
+                x += std::sin(angle) * lightGroup->rotateDistance * (lightGroup->rotateInverse ? -1 : 1);
+                y += std::cos(angle) * lightGroup->rotateDistance;
+            }
+
+            auto coronaOffset = CVector(x, y, 0) + lightGroup->offset + point->customOffset;
+
+            auto radius = lightGroup->radius;
+
+            if(hVehicle == Globals::hPlayerVehicle)
+            {
+                //menuVSL->debug->m_Visible = true;
+                //menuVSL->debug->AddLine("angle: " + std::to_string(angle));
+                //menuVSL->debug->AddLine("x: " + std::to_string(coronaOffsetX));
+            }
+
+            if(point->rotateObject.rotate && point->rotateObject.matrix != NULL)
+            {
+                auto coronaWorldPosition = TransformFromObjectSpace(pVehicle, coronaOffset);
+
+                auto carForward = CMatrixGetForward(pVehicle->m_matrix);
+
+                //roll
+
+                auto roll = point->rotateObject.roll + point->rotateObject.directionFix;
+
+                //
+
+                auto newDir = RotateVectorAroundZ(carForward, roll);
+
+                auto coronaForwardedPosition = coronaWorldPosition + newDir;
+
+                // ------------------
+
+                auto cameraPosition = camera->m_matrix->pos;
+
+                auto vec1 = coronaForwardedPosition;
+                vec1.z = coronaWorldPosition.z;
+
+                auto vec2 = coronaWorldPosition;
+
+                auto vec3 = cameraPosition;
+                vec3.z = coronaWorldPosition.z;
+
+                // pos Z is ignored :)
+                auto angle = GetAngleBetweenVectors(vec1, vec2, vec3);
+
+                float intensity = GetIntensityFromAngle(angle);
+
+                if(m_ShowRotatePointDirection)
+                {
+                    //menuVSL->debug->visible = true;
+                    //menuVSL->debug->AddLine("roll: " + std::to_string(point->rotateObject.roll));
+
+                    RegisterTestCorona(lightId++, vec1, CRGBA(255, 0, 0), 1.0f);
+                    //RegisterTestCorona(lightId++, vec2, CRGBA(0, 255, 0), 1.0f);
+                    RegisterTestCorona(lightId++, vec3, CRGBA(0, 0, 255), 1.0f);
+                }
+
+                radius *= intensity;
+            }
+        }
+    }
 }
 
 void Vehicle::RenderBefore()
@@ -588,7 +725,10 @@ void Vehicle::RenderBefore()
                 };
                 RwReal angle = point->rotateObject.speed;
 
+
                 RwMatrixRotate(&frameAtomic->modelling, &axis, angle, rwCOMBINEPRECONCAT);
+
+                point->rotateObject.totalAngle += angle;
 
                 //by chatGPT
 
@@ -609,13 +749,15 @@ void Vehicle::RenderBefore()
                     roll = atan2f(-frameAtomic->modelling.up.y, frameAtomic->modelling.right.y);
                 }
 
+                point->rotateObject.roll = roll;
+
                 point->rotateObject.matrix = &frameAtomic->modelling;
 
                 if(hVehicle == Globals::hPlayerVehicle)
                 {
-                    // menuVSL->debug->visible = true;
-                    // menuVSL->debug->AddLine("roll: " + std::to_string(roll));
-                    // menuVSL->debug->AddLine("matrix: " + std::to_string((int)point->rotateObject.matrix));
+                    //menuVSL->debug->visible = true;
+                    //menuVSL->debug->AddLine("roll: " + std::to_string(roll));
+                    //menuVSL->debug->AddLine("matrix: " + std::to_string((int)point->rotateObject.matrix));
                 }
             }
         }

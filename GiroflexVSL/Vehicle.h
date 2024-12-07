@@ -8,6 +8,7 @@
 class Vehicle {
 public:
 	static int m_LightIdOffset;
+	static bool m_ShowRotatePointDirection;
 
 	int hVehicle;
 	int modelId;
@@ -36,6 +37,9 @@ public:
 	void Destroy();
 	void Update(int dt);
 	void UpdateLightGroups(int dt);
+
+	void RegisterDebugCorona(int lightId, CVector worldPostion, CRGBA color);
+
 	void OnUpdateGameLogic();
 
 	void RenderBefore();

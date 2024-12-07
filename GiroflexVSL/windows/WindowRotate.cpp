@@ -70,7 +70,9 @@ void WindowRotate::CreatePointRotate(Window* parent, LightGroup* lightGroup, Poi
 
     window->AddCheckbox("Rotate always", &point->rotateObject.rotateAlways);
 
-    window->AddCheckbox("Flip forward dir", &point->rotateObject.flipForward);
+    auto showRotation = window->AddCheckbox("Show direction", &Vehicle::m_ShowRotatePointDirection);
+
+    auto rotationFix = window->AddFloatRange("Direction fix", &point->rotateObject.directionFix, -3.14f, 3.14f, 0.1f);
 
     auto close = window->AddButton("> ~r~Close");
     close->onClick = [window]() {
