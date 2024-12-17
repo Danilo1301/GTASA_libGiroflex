@@ -20,7 +20,7 @@ MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.9.0, Danilo1301)
 
 // ---------------------------------------
 
-// CLEO 2.0.1.3
+// CLEO 2.0.1.2
 #include "cleo.h"
 cleo_ifs_t* cleo = NULL;
 
@@ -514,15 +514,15 @@ extern "C" void OnModLoad()
     
     std::string amlVersion = CheckModVersion(
         { "net.rusjj.aml" },
-        { "1.0.0.0", "1.0.0.1", "1.0.0.2", "1.0.0.3", "1.0.0.4", "1.0.0.5", "1.0.0.6","1.0.1", "1.0.2", "1.0.2.1", "1.0.2.2", "1.0.3", "1.0.3.1", "1.1", "1.2", "1.2.1", "1.2.2" }
+        { "1.0.0.0", "1.0.0.1", "1.0.0.2", "1.0.0.3", "1.0.0.4", "1.0.0.5", "1.0.0.6","1.0.1", "1.0.2", "1.0.2.1", "1.0.2.2", "1.0.3", "1.0.3.1", "1.1", "1.2", "1.2.1", "1.2.2", "1.2.3" }
     );
 
     Log::Level(LOG_LEVEL::LOG_BOTH) << "----------------------------" << std::endl;
     Log::Level(LOG_LEVEL::LOG_BOTH) << "Game: " << aml->GetCurrentGame() << std::endl;
     Log::Level(LOG_LEVEL::LOG_BOTH) << "GiroflexVSL: " << Mod::m_Version << std::endl;
-    Log::Level(LOG_LEVEL::LOG_BOTH) << "CLEO version: " << cleoVersion << " (recommended 2.0.1.3)" << std::endl;
+    Log::Level(LOG_LEVEL::LOG_BOTH) << "CLEO version: " << cleoVersion << " (recommended 2.0.1.2)" << std::endl;
     Log::Level(LOG_LEVEL::LOG_BOTH) << "SAUtils version: " << sautilsVersion << " (recommended 1.3.1)" << std::endl;
-    Log::Level(LOG_LEVEL::LOG_BOTH) << "AML version: " << amlVersion << " (recommended 1.2.2)" << std::endl;
+    Log::Level(LOG_LEVEL::LOG_BOTH) << "AML version: " << amlVersion << " (recommended 1.2.3)" << std::endl;
     Log::Level(LOG_LEVEL::LOG_BOTH) << "----------------------------" << std::endl;
     Log::Level(LOG_LEVEL::LOG_BOTH) << "Config: " << aml->GetConfigPath() << std::endl;
 
