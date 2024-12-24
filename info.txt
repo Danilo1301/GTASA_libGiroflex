@@ -227,6 +227,9 @@ OBS: I also found a bug that detects a lightpanel button press before the panel 
 [3.9.0]
 [X] ADD: lights rotate with object
 
+[3.9.1]
+[X] ADD: option to disable siren when leaving car
+
 [ ] BUG: delay nas luzes q giram, acho q to pegando posição errada do objectWorldPosition
 
 -----------------------

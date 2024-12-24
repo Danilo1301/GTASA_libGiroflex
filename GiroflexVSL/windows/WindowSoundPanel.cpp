@@ -20,6 +20,7 @@ std::vector<AudioStreamData> WindowSoundPanel::m_audioStreamData;
 bool WindowSoundPanel::m_allowMultipleSounds = false;
 bool WindowSoundPanel::m_showOnEnterVehicle = true;
 bool WindowSoundPanel::m_showButtonToggleLights = true;
+bool WindowSoundPanel::m_turnOffSirenWhenLeaveCar = false;
 CRGBA WindowSoundPanel::m_buttonDefaultColor = { 109, 167, 100, 255 };
 CRGBA WindowSoundPanel::m_buttonActiveColor = { 255, 131, 131, 255 };
 CRGBA WindowSoundPanel::m_buttonOutlineColor = { 46, 77, 51, 255 };

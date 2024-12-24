@@ -20,6 +20,7 @@ public:
 	static bool m_allowMultipleSounds;
 	static bool m_showOnEnterVehicle;
 	static bool m_showButtonToggleLights;
+	static bool m_turnOffSirenWhenLeaveCar;
 	static CRGBA m_buttonDefaultColor;
 	static CRGBA m_buttonActiveColor;
 	static CRGBA m_buttonOutlineColor;

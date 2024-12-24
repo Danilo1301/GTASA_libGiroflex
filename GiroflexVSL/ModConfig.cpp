@@ -215,6 +215,7 @@ void ModConfig::SaveSettings()
     soundPanelSection->AddIntFromBool("allow_multiple_sound", WindowSoundPanel::m_allowMultipleSounds);
     soundPanelSection->AddIntFromBool("show_on_enter_vehicle", WindowSoundPanel::m_showOnEnterVehicle);
     soundPanelSection->AddIntFromBool("show_button_toggle_lights", WindowSoundPanel::m_showButtonToggleLights);
+    soundPanelSection->AddIntFromBool("turn_off_siren_when_leave_car", WindowSoundPanel::m_turnOffSirenWhenLeaveCar);
     soundPanelSection->AddCRGBA("button_color", WindowSoundPanel::m_buttonDefaultColor);
     soundPanelSection->AddCRGBA("button_active_color", WindowSoundPanel::m_buttonActiveColor);
     soundPanelSection->AddCRGBA("button_outline_color", WindowSoundPanel::m_buttonOutlineColor);
@@ -354,6 +355,7 @@ void ModConfig::LoadSettings()
         soundPanelSection->GetBoolFromInt("allow_multiple_sound", &WindowSoundPanel::m_allowMultipleSounds);
         soundPanelSection->GetBoolFromInt("show_on_enter_vehicle", &WindowSoundPanel::m_showOnEnterVehicle);
         soundPanelSection->GetBoolFromInt("show_button_toggle_lights", &WindowSoundPanel::m_showButtonToggleLights);
+        soundPanelSection->GetBoolFromInt("turn_off_siren_when_leave_car", &WindowSoundPanel::m_turnOffSirenWhenLeaveCar);
         soundPanelSection->GetCRGBA("button_color", &WindowSoundPanel::m_buttonDefaultColor);
         soundPanelSection->GetCRGBA("button_active_color", &WindowSoundPanel::m_buttonActiveColor);
         soundPanelSection->GetCRGBA("button_outline_color", &WindowSoundPanel::m_buttonOutlineColor);

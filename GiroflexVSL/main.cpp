@@ -16,7 +16,7 @@
 // ---------------------------------------
 
 //MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, Mod::m_Version, Danilo1301) //whoops
-MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.9.0, Danilo1301)
+MYMODCFG(net.danilo1301.giroflexVSL, GiroflexVSL, 3.9.1, Danilo1301)
 
 // ---------------------------------------
 
@@ -101,6 +101,8 @@ void SaveCfg()
 
 DECL_HOOK(void*, UpdateGameLogic, uintptr_t a1)
 {
+    Log::Level(LOG_LEVEL::LOG_UPDATE) << "UpdateGameLogic" << std::endl;
+
     if(BASS) {
         soundsys->Update();
     }
@@ -112,16 +114,22 @@ DECL_HOOK(void*, UpdateGameLogic, uintptr_t a1)
         vehicle->OnUpdateGameLogic();
     }
 
+    Log::Level(LOG_LEVEL::LOG_UPDATE) << "UpdateGameLogic end" << std::endl;
+
     return UpdateGameLogic(a1);
 }
 
 DECL_HOOKv(RenderVehicle, void* self)
 {
+    Log::Level(LOG_LEVEL::LOG_UPDATE) << "RenderVehicle" << std::endl;
+
     CVehicle* vehicle = (CVehicle*)self;
 
     Vehicles::RenderBefore(vehicle);
     RenderVehicle(self);
     Vehicles::RenderAfter(vehicle);
+
+    Log::Level(LOG_LEVEL::LOG_UPDATE) << "RenderVehicle end" << std::endl;
 }
 
 #include "sdk/Image.h"
@@ -206,11 +214,11 @@ unsigned short* textGxt = new unsigned short[0xFF];
 
 CSprite2d sprite;
 
-DECL_HOOKv(CHud_Draw, void* self)
-{
+//DECL_HOOKv(CHud_Draw, void* self)
+//{
     //Log::Level(LOG_LEVEL::LOG_BOTH) << "CHud_Draw" << std::endl;
 
-    CHud_Draw(self);
+    //CHud_Draw(self);
 
     /*
     CSprite2d_DrawRect(CRect(300, 300, 400, 400), CRGBA(0, 0, 255));
@@ -235,7 +243,7 @@ DECL_HOOKv(CHud_Draw, void* self)
     CFont_PrintString(300, 300, textGxt);
     RenderFontBuffer();
     */
-}
+//}
 
 
 //
@@ -346,6 +354,8 @@ void LoadSymbols()
     HOOKPLT(UpdateGameLogic, gameAddr + 0x66FE58);
 
     HOOK(RenderVehicle, aml->GetSym(hGTASA, "_ZN8CVehicle6RenderEv"));
+
+
     //HOOK(CHud_Draw, aml->GetSym(hGTASA, "_ZN4CHud4DrawEv"));
 
     //

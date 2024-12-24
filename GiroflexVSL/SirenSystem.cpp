@@ -7,6 +7,8 @@
 #include "Vehicles.h"
 #include "Widgets.h"
 
+#include "windows/WindowSoundPanel.h"
+
 #include "iniconfig/INIFile.h"
 
 std::string SirenSystem::m_DefaultGroupId = "";
@@ -456,9 +458,18 @@ void SirenSystem::Update(int dt)
 		}
 	} 
 
-	if(!SirenSystem::ModelIdHasSirenGroup(modelId)) return;
+	//boomark1
+	if(WindowSoundPanel::m_turnOffSirenWhenLeaveCar)
+	{
+		if(vehicle->pDriver == NULL && sirenState)
+		{
+			ToggleSiren(false);
+		}
+	}
 
 	/*
+	//if(!SirenSystem::ModelIdHasSirenGroup(modelId)) return;
+
 	auto siren = sirens[0];
 	if(siren->GetState() == -1)
 	{

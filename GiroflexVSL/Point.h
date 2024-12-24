@@ -55,7 +55,7 @@ public:
 		Json::Value rotateObjectValue = value["rotateObject"];
 		if(!rotateObjectValue.isNull())
 		{
-			rotateObject.speed = ValidateValue(rotateObjectValue["speed"], rotateObject.speed).asInt();
+			rotateObject.speed = ValidateValue(rotateObjectValue["speed"], rotateObject.speed).asFloat();
 			rotateObject.object = ValidateValue(rotateObjectValue["object"], rotateObject.object).asString();
 			rotateObject.axis = (eRotateObjectAxis)ValidateValue(rotateObjectValue["axis"], (int)rotateObject.axis).asInt();
 			rotateObject.rotateAlways = ValidateValue(rotateObjectValue["rotateAlways"], rotateObject.rotateAlways).asBool();

@@ -26,7 +26,7 @@ extern RpClump* (*RpClumpForAllAtomics)(RpClump* clump, RpAtomicCallBack callbac
 extern RpGeometry* (*RpGeometryForAllMaterials)(RpGeometry* geometry, RpMaterialCallBack fpCallBack, void* pData);
 extern char* (*GetFrameNodeName)(RwFrame* frame);
 
-const char* Mod::m_Version = "3.9.0";
+const char* Mod::m_Version = "3.9.1";
 
 bool canTurnSirenOn = true;
 bool canTurnPanelOn = true;
@@ -35,6 +35,8 @@ Vehicle* testedVehicle = NULL;
 
 void Mod::Update(int dt)
 {
+    Log::Level(LOG_LEVEL::LOG_UPDATE) << "* Mod.Update" << std::endl;
+
     while (Draw::m_DrawItems.size() > 0)
     {
         auto dw = Draw::m_DrawItems[0];
@@ -44,7 +46,7 @@ void Mod::Update(int dt)
 
     //
 
-    Log::Level(LOG_LEVEL::LOG_UPDATE) << "> Vehicles --------------" << std::endl;
+    Log::Level(LOG_LEVEL::LOG_UPDATE) << "Vehicles" << std::endl;
 
     Vehicles::TryFindNewVehicles();
 
@@ -106,20 +108,16 @@ void Mod::Update(int dt)
         }
     }
 
-    //Log::Level(LOG_LEVEL::LOG_UPDATE) << "SoundPanelSystem" << std::endl;
-
     //SoundPanelSystem::Update(dt);
 
-    Log::Level(LOG_LEVEL::LOG_UPDATE) << "> Menu" << std::endl;
+    Log::Level(LOG_LEVEL::LOG_UPDATE) << "Menu" << std::endl;
 
     Menu::Update(dt);
 
-    Log::Level(LOG_LEVEL::LOG_UPDATE) << "> WindowSettings" << std::endl;
+    Log::Level(LOG_LEVEL::LOG_UPDATE) << "WindowSettings/SoundPanel" << std::endl;
 
     WindowSettings::Update(dt);
     WindowSettings::Draw();
-
-    Log::Level(LOG_LEVEL::LOG_UPDATE) << "> WindowSoundPanel" << std::endl;
     
     WindowSoundPanel::Draw();
     WindowSoundPanel::Update(dt);
@@ -127,9 +125,9 @@ void Mod::Update(int dt)
     WindowPanel::Update();
     WindowPanel::Draw();
     
-    Menu::Draw();
+    Log::Level(LOG_LEVEL::LOG_UPDATE) << "Menu/Input/Widgets" << std::endl;
 
-    Log::Level(LOG_LEVEL::LOG_UPDATE) << "> Input" << std::endl;
+    Menu::Draw();
 
     Input::Update(dt);
     Widgets::Update(dt);
@@ -177,7 +175,7 @@ void Mod::Update(int dt)
         Menu::ShowCredits(6, 5000);
     }
 
-    Log::Level(LOG_LEVEL::LOG_UPDATE) << "> end" << std::endl;
+    Log::Level(LOG_LEVEL::LOG_UPDATE) << "* Mod.Update end" << std::endl;
 }
 
 void Mod::ProcessMenuButtons(int dt)

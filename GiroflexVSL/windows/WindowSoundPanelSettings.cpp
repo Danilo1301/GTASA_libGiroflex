@@ -60,6 +60,8 @@ void WindowSoundPanelSettings::Create()
 
 	window->AddCheckbox(87, &WindowSoundPanel::m_showButtonToggleLights);
 
+	window->AddCheckbox(115, &WindowSoundPanel::m_turnOffSirenWhenLeaveCar);
+
 	auto button_position = window->AddButton(9);
 	button_position->onClick = [window]() {
 		Menu::AddPosition2DWindow(window, &WindowSoundPanel::m_position, -10000.0f, 10000.0f, 0.5f, []() {

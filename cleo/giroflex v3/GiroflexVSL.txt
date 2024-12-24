@@ -107,7 +107,7 @@ const
     
     VAR_DeltaTime = 29@
     
-    Clock = 30@
+    CurrClock = 30@
     PrevClock = 31@
     
     VAR_VelX = 32@
@@ -129,7 +129,7 @@ var
     MenuOffsetX : Float = 0.0
     
     PrevClock : Int = 0
-    Clock : Int = 0
+    CurrClock: Int = 0
     
     VAR_DeltaTime : Int = 0
     
@@ -387,13 +387,13 @@ return
 
 VAR_Integer1 = 1
 
-01BD: Clock = current_time_in_ms
+01BD: CurrClock = current_time_in_ms
 
-if PrevClock == Clock
+if PrevClock == CurrClock
 then
 else
     VAR_Integer1 = 0
-    VAR_Integer1 = Clock
+    VAR_Integer1 = CurrClock
     VAR_Integer1 -= PrevClock
     VAR_DeltaTime = VAR_Integer1
     01BD: PrevClock = current_time_in_ms 
@@ -1113,5 +1113,9 @@ end
 if VAR_GxtId == 114
 then
      VAR_STR_1 = "DGFX114"
+end
+if VAR_GxtId == 115
+then
+     VAR_STR_1 = "DGFX115"
 end
 return
