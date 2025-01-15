@@ -38,9 +38,9 @@
 
 <h1>Como usar</h1>
 
-* Pressione os números imaginários 5 e 6 ([exemplo](https://imgur.com/gA8Lfvt)) por 0.5s para ligar a sirene
-* Pressione os números imaginários 5 e 6 ([exemplo](https://imgur.com/gA8Lfvt)) por 1s para abrir o menu de edição
-* Painel: Pressione os números imaginários 5 e 9 ([exemplo](https://imgur.com/LLddMfg)) por 0.5s
+* Pressione os números imaginários 5 e 6 ([exemplo](https://imgur.com/gallery/5-6-trYF5wv)) por 0.5s para ligar a sirene
+* Pressione os números imaginários 5 e 6 ([exemplo](https://imgur.com/gallery/5-6-trYF5wv)) por 1s para abrir o menu de edição
+* Painel: Pressione os números imaginários 5 e 9 ([exemplo](https://imgur.com/gallery/5-9-xxJTFwh)) por 0.5s
 
 <h1>Tutoriais</h1>
 
